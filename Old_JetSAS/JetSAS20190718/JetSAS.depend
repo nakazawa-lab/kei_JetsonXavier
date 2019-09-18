@@ -1,0 +1,144 @@
+# depslib dependency file v1.0
+1543472478 source:/home/nvidia/projects/JetsonXavier/JetSAS/aquestalk.cpp
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<unistd.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<stdarg.h>
+	"jetsas.h"
+
+1545805310 /home/nvidia/projects/JetsonXavier/JetSAS/jetsas.h
+	"SimpleGPIO.h"
+	"timer.h"
+
+315532800 /home/nvidia/projects/JetsonXavier/JetSAS/SimpleGPIO.h
+
+315532800 /home/nvidia/projects/JetsonXavier/JetSAS/timer.h
+	<stdio.h>
+
+1563346087 source:/home/nvidia/projects/JetsonXavier/JetSAS/gpio.cpp
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<unistd.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<iostream>
+	<string>
+	<unistd.h>
+	"jetsas.h"
+	"SimpleGPIO.h"
+
+1563428863 source:/home/nvidia/projects/JetsonXavier/JetSAS/i2c1_sensor.cpp
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<unistd.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	"jetsas.h"
+
+315532800 source:/home/nvidia/projects/JetsonXavier/JetSAS/jetduino_spi.cpp
+	<iostream>
+	<linux/types.h>
+	<stdbool.h>
+	<dlfcn.h>
+	<utime.h>
+	<sys/stat.h>
+	<unistd.h>
+	<sys/types.h>
+	<sys/timeb.h>
+	<exception>
+	<string>
+	<iosfwd>
+	<sstream>
+	<fstream>
+	<iterator>
+	<iostream>
+	<vector>
+	<deque>
+	<stack>
+	<map>
+	<list>
+	<unordered_set>
+	<stdio.h>
+	<stdint.h>
+	<stdlib.h>
+	<cctype>
+	<math.h>
+	<memory.h>
+	<algorithm>
+	<string.h>
+	<time.h>
+	<errno.h>
+	<fcntl.h>
+	<poll.h>
+	<getopt.h>
+	<sys/ioctl.h>
+	<linux/spi/spidev.h>
+	"SimpleGPIO.h"
+
+1563428537 source:/home/nvidia/projects/JetsonXavier/JetSAS/lcd.cpp
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<unistd.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<stdarg.h>
+
+1563428344 source:/home/nvidia/projects/JetsonXavier/JetSAS/main.cpp
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<unistd.h>
+	<time.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<pthread.h>
+	<iostream>
+	<string>
+	<unistd.h>
+	<opencv2/opencv.hpp>
+	<urg_c/urg_sensor.h>
+	<urg_c/urg_utils.h>
+	"SimpleGPIO.h"
+	"jetsas.h"
+	"open_urg_sensor.h"
+
+1546669042 /home/nvidia/projects/JetsonXavier/JetSAS/open_urg_sensor.h
+	<urg_c/urg_sensor.h>
+
+1546843754 source:/home/nvidia/projects/JetsonXavier/JetSAS/open_urg_sensor.cpp
+	<urg_c/urg_sensor.h>
+	<urg_c/urg_utils.h>
+	<urg_c/urg_detect_os.h>
+	<string.h>
+	<stdio.h>
+
+1563346352 source:/home/nvidia/projects/JetsonXavier/JetSAS/serial.cpp
+	<stdlib.h>
+	<stdio.h>
+	<unistd.h>
+	<fcntl.h>
+	<termios.h>
+	<string.h>
+	"jetsas.h"
+
+315532800 source:/home/nvidia/projects/JetsonXavier/JetSAS/SimpleGPIO.cpp
+	"SimpleGPIO.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<unistd.h>
+	<fcntl.h>
+	<poll.h>
+
+1563344662 source:/home/nvidia/projects/JetsonXavier/JetSAS/timer.cpp
+	<stdio.h>
+	<time.h>
+	"timer.h"
+

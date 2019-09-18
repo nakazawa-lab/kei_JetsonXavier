@@ -1,0 +1,2 @@
+STAT: include config: julius.jconf
+ERROR: m_jconf: failed to open jconf file: julius.jconf
