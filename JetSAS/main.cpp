@@ -109,23 +109,27 @@ int main(int argc, char *argv[])
     ip::tcp::iostream s(ep);
 
     /// ready to fetch texts that you want
-    boost::regex o_regex("SCORE=\"([^\"]+)\"");
-    boost::smatch l_match;
-    boost::regex p_regex("CM=\"([^\"]+)\"");
-    boost::smatch m_match;
-    boost::regex q_regex("WORD=\"([^\"]+)\"");
-    boost::smatch n_match;
-    boost::regex r_regex("MSEC=\"([^\"]+)\"");
-    boost::smatch o_match;
+    boost::regex score_regex("SCORE=\"([^\"]+)\"");
+    boost::smatch score_match;
+    boost::regex cm_regex("CM=\"([^\"]+)\"");
+    boost::smatch cm_match;
+    boost::regex word_regex("WORD=\"([^\"]+)\"");
+    boost::smatch word_match;
+    boost::regex msec_regex("MSEC=\"([^\"]+)\"");
+    boost::smatch msec_match;
+    boost::regex classid_regex("CLASSID=\"([^\"]+)\"");
+    boost::smatch classid_match;
 
-    string line, score, cm, word, reply, msec;
-    string cmnd0, cmnd1, cmnd2, cmfm0, cmfm1;
-    string word0, word1, word2, word3, word4, word5;
-    float cmscore0, cmscore1, cmscore2, cmscore3, cmscore4, cmscore5, rcmscore, cmtime;
-    float abscore0, abscore1, abscore2, abscore3, abscore4, abscore5;
-    float rsltcmscore0, rsltcmscore1, rsltcmscore2, rsltcmscore3, rsltcmscore4, rsltcmscore5;
-    float rsltscore0, rsltscore1, rsltscore2, rsltscore3, rsltscore4, rsltscore5;
-    float dscore = 0;
+//    string line, score, cm, word, reply, msec;
+//    string cmnd0, cmnd1, cmnd2, cmfm0, cmfm1;
+//    string word0, word1, word2, word3, word4, word5;
+//    float cmscore0, cmscore1, cmscore2, cmscore3, cmscore4, cmscore5, rcmscore, cmtime;
+//    float abscore0, abscore1, abscore2, abscore3, abscore4, abscore5;
+//    float rsltcmscore0, rsltcmscore1, rsltcmscore2, rsltcmscore3, rsltcmscore4, rsltcmscore5;
+//    float rsltscore0, rsltscore1, rsltscore2, rsltscore3, rsltscore4, rsltscore5;
+//    float dscore = 0;
+    string line, cm, word, msec, classid;
+    float cmscore, cmtime;
 
 //    pthread_create(&tid2, NULL, cmd_stop, NULL);
 
@@ -148,109 +152,32 @@ int main(int argc, char *argv[])
 
     /******************************************************** end ***/
 
-    while (1){
-
+    while (1)
+    {
+        while (getline(s, line))
+        {
+            if (line.find("<STARTRECOG/>") != string::npos)
+            {
+                cm = "";
+                word = "";
+                msec = "";
+                classid = "";
+            }
+            else if (line.find("</RECOGOUT>") != string::npos)
+            {
+                cmscore = atof(cm.c_str());     /// string -> float
+                cmtime = atof(msec.c_str());    /// string -> float
+                cout << "WORD=" << word << ", " << "SCORE=" << cmscore << ", "<< "TIME=" << cmtime << endl;
+                break;
+            }
+            else
+            {
+                if (boost::regex_search(line, cm_match, cm_regex)) cm += cm_match.str(1);     /// 一致度を取得
+                if (boost::regex_search(line, word_match, word_regex)) word += word_match.str(1);   /// 命令を取得
+                if (boost::regex_search(line, msec_match, msec_regex)) msec += msec_match.str(1);   /// 時間を取得
+            }
+        }
     }
-//    for(i=0; i<2; i++)
-//    {
-//        gpio_led(LED_RED,LED_OFF);
-//        gpio_led(LED_BLUE,LED_OFF);
-//        gpio_led(LED_GREEN,LED_OFF);
-//
-//        usleep(500000);         // on for 200ms
-//        gpio_led(LED_RED,LED_ON);
-//        gpio_led(LED_BLUE,LED_ON);
-//        gpio_led(LED_GREEN,LED_ON);
-//        usleep(500000);         // on for 200ms
-//    }
-//    gpio_led(LED_RED,LED_OFF);
-//    gpio_led(LED_BLUE,LED_OFF);
-//    gpio_led(LED_GREEN,LED_OFF);
-//
-//    printf("jt time1 %d[sec] %d[nsec]\n",jt.get_sec(),jt.get_nsec());
-//
-//    jetsas(1,2,3);
-//
-//    LCD_printf(0, 0,"START");
-//
-//
-/////    sensor(SHT31,g);
-/////    sensor(S11059,g);
-//    /*****/
-//    sensor(LPS25H,g);
-//    printf("LPS25H %7.4f %7.4f %7.4f %7.4f %7.4f %7.4f\n",g[0],g[1],g[2],g[3],g[4],g[5]);
-//    while(gpio_sw(SW1));
-//    /****/
-//
-//    usleep(1000000);         // on for 200ms
-//
-//    while(1)
-//    {
-//        sensor(MPU6050,g);
-//        printf("MPU6050 %7.4f %7.4f %7.4f %7.4f %7.4f %7.4f\n",g[0],g[1],g[2],g[3],g[4],g[5]);
-//
-/////        usleep(500000);         // on for 200ms
-//        LCD_printf(0,0,"%7.4f %7.4f",g[0],g[1]);
-//        LCD_printf(0,1,"%7.4f ",g[2]);
-//
-//        if (gpio_sw(SW1)==LOW) break;
-//    };
-//    // Wait for the push button to be pressed
-//    cout << "Please press the button!" << endl;
-//
-//    unsigned int value = LOW;
-//    int j=0;
-//    do
-//    {
-//        jetsas(1,2,3);
-//
-//        /**       sensor(S11059,g); ///        sensor(MPU6050,g);
-//               LCD_printf(0,0,"%6.1f %6.1f ",g[0],g[1]);
-//               LCD_printf(0,1,"%6.1f %6.1f",g[2],g[3]);
-//
-//               jetsas(1,2,3);
-//               send_tocos(j%26);
-//               j++;
-//        **/
-//
-//        /*****/
-//        urg_start_measurement(&urg, URG_DISTANCE, 1, 0); /// URG sample
-//        n = urg_get_distance(&urg, urg_data, &time_stamp);
-//        if (n < 0)
-//        {
-//            printf("urg_get_distance: %s\n", urg_error(&urg));
-//            urg_close(&urg);
-//            return 1;
-//        }
-//        for (i = 0; i < n; ++i)
-//        {
-//            /// printf("i=%d d=%d \n",i,data[i]);
-//            cv::Point f=cv::Point(i, 0);
-//            cv::line(img, cv::Point(i, 0), cv::Point(i, 500), cv::Scalar(0,0,0), 1, 4);
-//            cv::line(img, cv::Point(i, 500), cv::Point(i, 500-urg_data[i]/5), cv::Scalar(200,0,0), 1, 4);
-//        }
-//        cv::line(img, cv::Point(0, 100), cv::Point(680, 100), cv::Scalar(0,0,200), 1, 4);
-//        cv::line(img, cv::Point(0, 200), cv::Point(680, 200), cv::Scalar(0,0,200), 1, 4);
-//        cv::line(img, cv::Point(0, 300), cv::Point(680, 300), cv::Scalar(0,0,200), 1, 4);
-//        cv::line(img, cv::Point(0, 400), cv::Point(680, 400), cv::Scalar(0,0,200), 1, 4);
-//        cv::imshow("URG data", img);
-//        cv::waitKey(1);
-//        usleep(1000);      // sleep for one millisecond
-//        /************/
-//        value=gpio_sw(SW1);
-//    }
-//    while (value==HIGH);
-//
-//    cout << endl <<  "Button was just pressed!" << endl;
-//    cout << "Finished Testing the GPIO Pins" << endl;
-//    gpio_close();
-//
-//    printf("time2 %d[sec] %d[nsec]\n",jt.get_sec(),jt.get_nsec());
-////    pthread_join(tid1,NULL);
-//    pthread_mutex_destroy(&mutex);
-/////    spi_close();
-////    urg_close(&urg);
-
     return 0;
 }/****************************************************************** END ***/
 
