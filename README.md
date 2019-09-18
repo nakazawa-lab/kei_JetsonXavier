@@ -10,5 +10,3 @@ cd ~/HARK/hark-designer/userdata/speech_recognition
 
 cd ~/HARK/julius-4.2.3-hark/jcontrol
 ./jcontrol xavier
-
-
