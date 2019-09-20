@@ -37,6 +37,7 @@
 /// 20190911 for speech recognition
 #include <boost/regex.hpp>
 #include <boost/asio.hpp>
+
 using namespace boost::asio;
 
 using namespace std;
@@ -117,8 +118,10 @@ int main(int argc, char *argv[])
     boost::smatch word_match;
     boost::regex msec_regex("MSEC=\"([^\"]+)\"");
     boost::smatch msec_match;
-    boost::regex classid_regex("CLASSID=\"([^\"]+)\"");
-    boost::smatch classid_match;
+    boost::regex sourceid_regex("SOURCEID=\"([^\"]+)\"");
+    boost::smatch sourceid_match;
+    boost::regex azimuth_regex("AZIMUTH=\"([^\"]+)\"");
+    boost::smatch azimuth_match;
 
 //    string line, score, cm, word, reply, msec;
 //    string cmnd0, cmnd1, cmnd2, cmfm0, cmfm1;
@@ -128,8 +131,9 @@ int main(int argc, char *argv[])
 //    float rsltcmscore0, rsltcmscore1, rsltcmscore2, rsltcmscore3, rsltcmscore4, rsltcmscore5;
 //    float rsltscore0, rsltscore1, rsltscore2, rsltscore3, rsltscore4, rsltscore5;
 //    float dscore = 0;
-    string line, cm, word, msec, classid;
-    float cmscore, cmtime;
+    string line, sourceid, azimuth, cm, word, msec;
+    float cmscore, direction;
+    int sid, cmtime;
 
 //    pthread_create(&tid2, NULL, cmd_stop, NULL);
 
@@ -156,25 +160,63 @@ int main(int argc, char *argv[])
     {
         while (getline(s, line))
         {
-            if (line.find("<STARTRECOG/>") != string::npos)
+            /// This printf function show you all the text date sent from Julius
+            printf("debug: %s\n", line.c_str());
+
+            /********************* An example of text data sent from Julius *********************
+            > <STARTPROC/>
+            > <SOURCEINFO SOURCEID="351" AZIMUTH="-80.001717" ELEVATION="16.702362" SEC="1568966750" USEC="466169"/>
+            > <STARTRECOG SOURCEID="351"/>
+            > <ENDRECOG SOURCEID="351"/>
+            > <INPUTPARAM SOURCEID="351" FRAMES="272" MSEC="2720"/>
+            > <RECOGOUT SOURCEID="351">
+            >   <SHYPO RANK="1" SCORE="2123.848389" GRAM="0">
+            >     <WHYPO WORD="<s>" CLASSID="0" PHONE="silB" CM="1.000"/>
+            >     <WHYPO WORD="come" CLASSID="2" PHONE="k a m u" CM="0.373"/>
+            >     <WHYPO WORD="</s>" CLASSID="1" PHONE="silE" CM="1.000"/>
+            >   </SHYPO>
+            > </RECOGOUT>
+            > <RECOGEND SOURCEID="351" SEC="1568966753" USEC="334428"/>
+            ********************************************************************************/
+
+            if (line.find("STARTPROC") != string::npos)
             {
                 cm = "";
                 word = "";
                 msec = "";
-                classid = "";
+                sourceid = "";
+                azimuth = "";
             }
-            else if (line.find("</RECOGOUT>") != string::npos)
+            else if (line.find("SOURCEINFO") != string::npos)
             {
+                boost::regex_search(line, sourceid_match, sourceid_regex);
+                sourceid = sourceid_match.str(1);
+                sid = atoi(sourceid.c_str());     /// string -> int
+
+                boost::regex_search(line, azimuth_match, azimuth_regex);
+                azimuth = azimuth_match.str(1);
+                direction = atof(azimuth.c_str());
+            }
+            else if (line.find("INPUTPARAM") != string::npos)
+            {
+                boost::regex_search(line, msec_match, msec_regex);
+                msec += msec_match.str(1);
+                cmtime = atoi(msec.c_str());    /// string -> float
+            }
+            else if (line.find("CLASSID=\"2\"") != string::npos)
+            {
+                boost::regex_search(line, cm_match, cm_regex);
+                cm = cm_match.str(1);
                 cmscore = atof(cm.c_str());     /// string -> float
-                cmtime = atof(msec.c_str());    /// string -> float
-                cout << "WORD=" << word << ", " << "SCORE=" << cmscore << ", "<< "TIME=" << cmtime << endl;
-                break;
+
+                boost::regex_search(line, word_match, word_regex);
+                word += word_match.str(1);
             }
-            else
+            else if (line.find("/RECOGOUT") != string::npos)
             {
-                if (boost::regex_search(line, cm_match, cm_regex)) cm += cm_match.str(1);     /// 一致度を取得
-                if (boost::regex_search(line, word_match, word_regex)) word += word_match.str(1);   /// 命令を取得
-                if (boost::regex_search(line, msec_match, msec_regex)) msec += msec_match.str(1);   /// 時間を取得
+                printf("WORD=%s, SCORE=%f, TIME=%d, ID=%d, DIRECTION=%f\n",
+                       word.c_str(), cmscore, cmtime, sid, direction);
+                break;
             }
         }
     }
