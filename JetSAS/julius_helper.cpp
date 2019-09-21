@@ -1,6 +1,6 @@
 /*************************************************************** K-MAIL ***
-* File Name : julius_fetch_text.cpp
-* Contents : JetSAS client with Julius program 1.00
+* File Name : julius_helper.cpp
+* Contents : Jetsas helper for doing with data sent from Julius program 1.00
 * Use Module:
 * Master CPU1 : Jetson Xavier NVidia
 * Slave  CPU2 : R5f72165ADF RENESAS

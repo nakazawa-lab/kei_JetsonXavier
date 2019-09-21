@@ -59,6 +59,4 @@ int sensor(int, float *);
 int AQUE_init(void);///aquestalk.cpp
 int AQUES_Talk(char *);
 
-int test_hello();///julius_fetch_text.cpp
-
 //extern int open_urg_sensor(urg_t *urg, int argc, char *argv[]);

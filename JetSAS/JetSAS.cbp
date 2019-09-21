@@ -42,6 +42,7 @@
 		<Unit filename="gpio.cpp" />
 		<Unit filename="i2c1_sensor.cpp" />
 		<Unit filename="jetduino_spi.cpp" />
+		<Unit filename="julius_helper.cpp" />
 		<Unit filename="lcd.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="open_urg_sensor.cpp" />
