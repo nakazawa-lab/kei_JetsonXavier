@@ -38,6 +38,9 @@
 #include <boost/regex.hpp>
 #include <boost/asio.hpp>
 
+/// 20190921 for fetched data
+#include "julius_struct.h"
+
 using namespace boost::asio;
 
 using namespace std;
@@ -67,6 +70,13 @@ int JetsonXavier_init()
 /****************************************************************** main ***/
 int main(int argc, char *argv[])
 {
+    JuliusResults rs;
+    _julius_result test;
+    test.sid = 1;
+    rs.jpush(&test);
+    cout << rs.select(1)->sid << endl;
+
+    ///
     int fd,i,ret;
     int addr = 0x3e;
     unsigned char buf[20];
