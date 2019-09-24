@@ -9,16 +9,20 @@
 * Revised : ver.1.00.00
 ***************************** Copyright NAKAZAWA Lab Dept. of SD.keio.jp ***/
 
-#ifndef _JULIUS_STRUCT_H_
-#define _JULIUS_STRUCT_H_
+// refer to http://www.kinjo-u.ac.jp/ushida/tekkotsu/cpp/ifndef.html
+//#ifndef _JULIUS_STRUCT_H_
+//#define _JULIUS_STRUCT_H_
+
+#ifndef JULIUS_STRUCT_H_
+#define JULIUS_STRUCT_H_
 
 using namespace std;
 
-//word.c_str(), cmscore, cmtime, sid, direction
 /// _julius_result is each result for utterance
 struct _julius_result
 {
-    int sid, duration;
+    int sid;
+    int duration;
     string word;
     float cmscore, direction;
 };
@@ -30,25 +34,10 @@ class JuliusResults
         _julius_result julius_err, result;
         vector<_julius_result> vect;
     public:
+        /// refer to julius_helper.cpp
         _julius_result* select(int id);
         void jpush(_julius_result* jr);
+        void insert_julius(string line);
 };
 
-_julius_result* JuliusResults::select(int id)
-{
-    for(auto r : vect){
-       if (id == r.sid){
-            result = r;
-            return &result;
-       }
-    }
-    return &julius_err;
-}
-
-void JuliusResults::jpush(_julius_result* jr)
-{
-    vect.push_back(*jr);
-}
-
-
-#endif // _JULIUS_STRUCT_H_
+#endif /* JULIUS_STRUCT_H_*/
