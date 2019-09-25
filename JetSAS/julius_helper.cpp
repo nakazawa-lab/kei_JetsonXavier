@@ -23,6 +23,7 @@ using namespace std;
 string line, sourceid, azimuth, cm, word, msec;
 float cmscore, direction;
 int sid, duration, lineid;
+bool recogout = false;
 
 boost::regex score_regex("SCORE=\"([^\"]+)\"");
 boost::smatch score_match;
@@ -37,109 +38,94 @@ boost::smatch sourceid_match;
 boost::regex azimuth_regex("AZIMUTH=\"([^\"]+)\"");
 boost::smatch azimuth_match;
 
+JuliusResults::JuliusResults()
+{
+    _julius_result* error_handling;
+    results_map[-1] = error_handling;
+}
+
 _julius_result* JuliusResults::select(int id)
 {
-    for(auto r : vect)
-    {
-        if (id == r.sid)
-        {
-            result = r;
-            return &result;
-        }
-    }
-    return &julius_err;
+    return results_map.at(id);
 }
 
-/// jpush is append _julius_result object to the verctor.
-void JuliusResults::jpush(_julius_result* jr)
+/// results_mapに新しい要素を追加する。
+void JuliusResults::jadd(_julius_result* jr)
 {
-    vect.push_back(*jr);
+    results_map[jr->sid] = jr;
 }
 
-int test_hello()
-{
-    printf("Hello\n");
-    return 0;
-}
+/******************************** An example of text data sent from Julius ********************************
+> <STARTPROC/>
+> <SOURCEINFO SOURCEID="351" AZIMUTH="-80.001717" ELEVATION="16.702362" SEC="1568966750" USEC="466169"/>
+> <STARTRECOG SOURCEID="351"/>
+> <ENDRECOG SOURCEID="351"/>
+> <INPUTPARAM SOURCEID="351" FRAMES="272" MSEC="2720"/>
+> <RECOGOUT SOURCEID="351">
+>   <SHYPO RANK="1" SCORE="2123.848389" GRAM="0">
+>     <WHYPO WORD="<s>" CLASSID="0" PHONE="silB" CM="1.000"/>
+>     <WHYPO WORD="come" CLASSID="2" PHONE="k a m u" CM="0.373"/>
+>     <WHYPO WORD="</s>" CLASSID="1" PHONE="silE" CM="1.000"/>
+>   </SHYPO>
+> </RECOGOUT>
+> <RECOGEND SOURCEID="351" SEC="1568966753" USEC="334428"/>
+***********************************************************************************************************/
 
-/*
-debug: <STARTPROC/>
-debug: <SOURCEINFO SOURCEID="81" AZIMUTH="84.998909" ELEVATION="16.702362" SEC="1569297403" USEC="865066"/>
-debug: <STARTRECOG SOURCEID="81"/>
-debug: <STARTPROC/>
-debug: <SOURCEINFO SOURCEID="83" AZIMUTH="90.000000" ELEVATION="16.702362" SEC="1569297408" USEC="411834"/>
-debug: <STARTRECOG SOURCEID="83"/>
-debug: <ENDRECOG SOURCEID="83"/>
-debug: <INPUTPARAM SOURCEID="83" FRAMES="572" MSEC="5720"/>
-debug: <RECOGOUT SOURCEID="83">
-debug:   <SHYPO RANK="1" SCORE="4256.807129" GRAM="0">
-debug:     <WHYPO WORD="<s>" CLASSID="0" PHONE="silB" CM="1.000"/>
-debug:     <WHYPO WORD="come" CLASSID="2" PHONE="k a m u" CM="0.979"/>
-debug:     <WHYPO WORD="</s>" CLASSID="1" PHONE="silE" CM="1.000"/>
-debug:   </SHYPO>
-debug: </RECOGOUT>
-WORD=come, SCORE=0.979000, TIME=5720, ID=83, DIRECTION=90.000000
-debug: <RECOGEND SOURCEID="83" SEC="1569297414" USEC="591938"/>
-debug: <ENDRECOG SOURCEID="81"/>
-debug: <INPUTPARAM SOURCEID="81" FRAMES="1022" MSEC="10220"/>
-debug: <RECOGOUT SOURCEID="81">
-debug:   <SHYPO RANK="1" SCORE="7012.838379" GRAM="0">
-debug:     <WHYPO WORD="<s>" CLASSID="0" PHONE="silB" CM="1.000"/>
-debug:     <WHYPO WORD="come" CLASSID="2" PHONE="k a m u" CM="0.996"/>
-debug:     <WHYPO WORD="</s>" CLASSID="1" PHONE="silE" CM="1.000"/>
-debug:   </SHYPO>
-debug: </RECOGOUT>
-WORD=comecome, SCORE=0.996000, TIME=572010220, ID=83, DIRECTION=90.000000
-debug: <RECOGEND SOURCEID="81" SEC="1569297414" USEC="707699"/>
-*/
-void JuliusResults::insert_julius(string line)
+int JuliusResults::jmerge_data(string line)
 {
+//    cout << "input line: " << line << endl;
     /// はじめに"SOURCEINFO"を見つけたら_julius_resultオブジェクトを生成
-    /// sourceidをjr.sidという変数として控えJuliusResultsの要素として新規に保存
     if (line.find("SOURCEINFO") != string::npos)
     {
-        _julius_result tmp;
+        _julius_result* tmp = new _julius_result;
 
         boost::regex_search(line, sourceid_match, sourceid_regex);
         sourceid = sourceid_match.str(1);
-        tmp.sid = atoi(sourceid.c_str());     /// string -> int
+        tmp->sid = atoi(sourceid.c_str());     /// string -> int
 
         boost::regex_search(line, azimuth_match, azimuth_regex);
         azimuth = azimuth_match.str(1);
-        tmp.direction = atof(azimuth.c_str());   /// string -> float
+        tmp->direction = atof(azimuth.c_str());   /// string -> float
 
-        jpush(&tmp);
+        jadd(tmp);
+        return -1;
     }
-    /// これ以降の記述は、生成された_julius_resultオブジェクトにcmscoreなどの要素を追加していくもの
-    /// 送られてくる文字列データの中のsourceid(lineidとして保存)と、JuliusResultsがもつsidを照合する
-    else if(line.find("SOURCEID") != string::npos)
+    /// SOURCEINFOと書かれていないが、SOURCEIDと書かれた行の場合
+    /// 例えば、"<INPUTPARAM SOURCEID="83" FRAMES="572" MSEC="5720"/>"
+    else if (line.find("SOURCEID") != string::npos)
     {
         boost::regex_search(line, sourceid_match, sourceid_regex);
         sourceid = sourceid_match.str(1);
         lineid = atoi(sourceid.c_str());
-        cout << "line; " << select(lineid)->sid << endl;
-        _julius_result* jrp = select(lineid);
-
         if (line.find("INPUTPARAM") != string::npos)
         {
             boost::regex_search(line, msec_match, msec_regex);
             msec += msec_match.str(1);
-            cout << "msec: " << msec << ", atoi: " << atoi(msec.c_str()) << endl;
-            jrp->duration = atoi(msec.c_str());
-            jrp->direction = 3.0;
-            cout << "debububug: " << jrp->duration << ", id: " << jrp->sid << ", jrp: " << jrp << endl;
-//            jrp->duration = &duration;
-//            cout << "debububug: " << jrp->duration << ", id: " << jrp->sid << ", jrp: " << jrp << endl;
+            select(lineid)->duration = atoi(msec.c_str());
         }
-//        else if (line.find("CLASSID=\"2\"") != string::npos)
-//        {
-//            boost::regex_search(line, cm_match, cm_regex);
-//            cm = cm_match.str(1);
-//            cmscore = atof(cm.c_str());
-//
-//            boost::regex_search(line, word_match, word_regex);
-//            word += word_match.str(1);
-//        }
+        else if (line.find("<RECOGOUT") != string::npos)
+        {
+            recogout = true;
+        }
+        return -1;
     }
+    else if (recogout==true && line.find("CLASSID=\"2\"") != string::npos)
+    {
+        boost::regex_search(line, cm_match, cm_regex);
+        cm = cm_match.str(1);
+        select(lineid)->cmscore = atof(cm.c_str());
 
+        boost::regex_search(line, word_match, word_regex);
+        select(lineid)->word += word_match.str(1);
+        return -1;
+    }
+    else if (line.find("</RECOGOUT>") != string::npos)
+    {
+        recogout = false;
+        return lineid;
+    }
+    else
+    {
+        return -1;
+    }
 }

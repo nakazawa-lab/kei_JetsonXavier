@@ -71,10 +71,10 @@ int JetsonXavier_init()
 int main(int argc, char *argv[])
 {
     JuliusResults jrs;
-    _julius_result test;
-    test.sid = 1;
-    jrs.jpush(&test);
-    cout << jrs.select(1)->sid << endl;
+//    _julius_result test;
+//    test.sid = 1;
+//    jrs.jpush(&test);
+//    cout << jrs.select(1)->sid << endl;
 
     ///
     int fd,i,ret;
@@ -145,16 +145,6 @@ int main(int argc, char *argv[])
     float cmscore, direction;
     int sid, cmtime;
 
-//    pthread_create(&tid2, NULL, cmd_stop, NULL);
-////
-    line = "<SOURCEINFO SOURCEID=\"83\" AZIMUTH=\"90.030000\" ELEVATION=\"16.702362\" SEC=\"1569297408\" USEC=\"411834\"/>";
-    jrs.insert_julius(line);
-    cout << "arere:" << jrs.select(83)->direction << endl;
-
-    line = "<INPUTPARAM SOURCEID=\"83\" FRAMES=\"572\" MSEC=\"5720\"/>";
-    jrs.insert_julius(line);
-    cout << "arareeeeeeeeee:" << jrs.select(83)->duration << ", id: " << jrs.select(83)->sid << ", direction: " << jrs.select(83)->direction << endl;
-
     getline(s, line);   /// サーバーのチェック
     if (line.find("<STARTPROC/>") != string::npos)
     {
@@ -178,64 +168,11 @@ int main(int argc, char *argv[])
     {
         while (getline(s, line))
         {
-            /// This printf function show you all the text date sent from Julius
-            printf("debug: %s\n", line.c_str());
+            int getid = jrs.jmerge_data(line);
+            if (getid != -1){
+               cout << "id: " << jrs.select(getid)->sid << " ,direction: " << jrs.select(getid)->direction << " ,cmscore: " << jrs.select(getid)->cmscore << endl;
+            }
 
-            /********************* An example of text data sent from Julius *********************
-            > <STARTPROC/>
-            > <SOURCEINFO SOURCEID="351" AZIMUTH="-80.001717" ELEVATION="16.702362" SEC="1568966750" USEC="466169"/>
-            > <STARTRECOG SOURCEID="351"/>
-            > <ENDRECOG SOURCEID="351"/>
-            > <INPUTPARAM SOURCEID="351" FRAMES="272" MSEC="2720"/>
-            > <RECOGOUT SOURCEID="351">
-            >   <SHYPO RANK="1" SCORE="2123.848389" GRAM="0">
-            >     <WHYPO WORD="<s>" CLASSID="0" PHONE="silB" CM="1.000"/>
-            >     <WHYPO WORD="come" CLASSID="2" PHONE="k a m u" CM="0.373"/>
-            >     <WHYPO WORD="</s>" CLASSID="1" PHONE="silE" CM="1.000"/>
-            >   </SHYPO>
-            > </RECOGOUT>
-            > <RECOGEND SOURCEID="351" SEC="1568966753" USEC="334428"/>
-            ********************************************************************************/
-
-            if (line.find("STARTPROC") != string::npos)
-            {
-                cm = "";
-                word = "";
-                msec = "";
-                sourceid = "";
-                azimuth = "";
-            }
-            else if (line.find("SOURCEINFO") != string::npos)
-            {
-                boost::regex_search(line, sourceid_match, sourceid_regex);
-                sourceid = sourceid_match.str(1);
-                sid = atoi(sourceid.c_str());     /// string -> int
-
-                boost::regex_search(line, azimuth_match, azimuth_regex);
-                azimuth = azimuth_match.str(1);
-                direction = atof(azimuth.c_str());
-            }
-            else if (line.find("INPUTPARAM") != string::npos)
-            {
-                boost::regex_search(line, msec_match, msec_regex);
-                msec += msec_match.str(1);
-                cmtime = atoi(msec.c_str());    /// string -> float
-            }
-            else if (line.find("CLASSID=\"2\"") != string::npos)
-            {
-                boost::regex_search(line, cm_match, cm_regex);
-                cm = cm_match.str(1);
-                cmscore = atof(cm.c_str());     /// string -> float
-
-                boost::regex_search(line, word_match, word_regex);
-                word += word_match.str(1);
-            }
-            else if (line.find("/RECOGOUT") != string::npos)
-            {
-                printf("WORD=%s, SCORE=%f, TIME=%d, ID=%d, DIRECTION=%f\n",
-                       word.c_str(), cmscore, cmtime, sid, direction);
-                break;
-            }
         }
     }
 //    while (1)

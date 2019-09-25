@@ -21,8 +21,7 @@ using namespace std;
 /// _julius_result is each result for utterance
 struct _julius_result
 {
-    int sid;
-    int duration;
+    int sid, duration;
     string word;
     float cmscore, direction;
 };
@@ -31,13 +30,13 @@ class JuliusResults
 {
     private:
         int id;
-        _julius_result julius_err, result;
-        vector<_julius_result> vect;
+        map<int, _julius_result*> results_map;
     public:
-        /// refer to julius_helper.cpp
+        /// julius_helper.cppで定義しています
+        JuliusResults();
         _julius_result* select(int id);
-        void jpush(_julius_result* jr);
-        void insert_julius(string line);
+        void jadd(_julius_result* jr);
+        int jmerge_data(string line);
 };
 
 #endif /* JULIUS_STRUCT_H_*/
