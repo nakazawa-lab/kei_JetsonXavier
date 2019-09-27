@@ -18,7 +18,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 
-#include <pthread.h>///
+#include <pthread.h>///並列処理
 
 #include <iostream>
 #include <string>
@@ -119,32 +119,7 @@ int main(int argc, char *argv[])
     ip::tcp::endpoint ep(ADDR, port);
     ip::tcp::iostream s(ep);
 
-    /// ready to fetch texts that you want
-    boost::regex score_regex("SCORE=\"([^\"]+)\"");
-    boost::smatch score_match;
-    boost::regex cm_regex("CM=\"([^\"]+)\"");
-    boost::smatch cm_match;
-    boost::regex word_regex("WORD=\"([^\"]+)\"");
-    boost::smatch word_match;
-    boost::regex msec_regex("MSEC=\"([^\"]+)\"");
-    boost::smatch msec_match;
-    boost::regex sourceid_regex("SOURCEID=\"([^\"]+)\"");
-    boost::smatch sourceid_match;
-    boost::regex azimuth_regex("AZIMUTH=\"([^\"]+)\"");
-    boost::smatch azimuth_match;
-
-//    string line, score, cm, word, reply, msec;
-//    string cmnd0, cmnd1, cmnd2, cmfm0, cmfm1;
-//    string word0, word1, word2, word3, word4, word5;
-//    float cmscore0, cmscore1, cmscore2, cmscore3, cmscore4, cmscore5, rcmscore, cmtime;
-//    float abscore0, abscore1, abscore2, abscore3, abscore4, abscore5;
-//    float rsltcmscore0, rsltcmscore1, rsltcmscore2, rsltcmscore3, rsltcmscore4, rsltcmscore5;
-//    float rsltscore0, rsltscore1, rsltscore2, rsltscore3, rsltscore4, rsltscore5;
-//    float dscore = 0;
-    string line, sourceid, azimuth, cm, word, msec;
-    float cmscore, direction;
-    int sid, cmtime;
-
+    string line;
     getline(s, line);   /// サーバーのチェック
     if (line.find("<STARTPROC/>") != string::npos)
     {
@@ -164,81 +139,213 @@ int main(int argc, char *argv[])
 
     /******************************************************** end ***/
 
+    /// NakBotに関する変数の定義
+    string mode = "normal";
+    string resp;
     while (1)
     {
         while (getline(s, line))
         {
-            int getid = jrs.jmerge_data(line);
-            if (getid != -1){
-               cout << "id: " << jrs.select(getid)->sid << " ,direction: " << jrs.select(getid)->direction << " ,cmscore: " << jrs.select(getid)->cmscore << endl;
+            int cmd_id = jrs.jmerge_data(line);
+            if (cmd_id != -1)
+            {
+                cout << "id: " << jrs.select(cmd_id)->sid << " ,direction: " << jrs.select(cmd_id)->direction << " ,cmscore: " << jrs.select(cmd_id)->cmscore << endl;
+                break;
+            }
+        }
+
+        /// 命令の認識
+        switch(mode)
+        {
+        case "sleep":
+//                if(word == "yes")
+//                {
+//                    say_sleep();
+//                    alutSleep(0.7);
+//                    s << "DIE\n" << std::flush;
+//                    return 0;
+//                }
+//                else
+//                {
+//                    s << "PAUSE\n" << std::flush;
+//                    say_ready();   /// "hello, master. i'm ready."
+//                    s << "RESUME\n" << std::flush;
+//                    state=0;
+//                }
+        case "stay":
+//            if(word == "ok")
+//            {
+//                s << "PAUSE\n" << std::flush;
+//                say_ready();   /// "hello, master. i'm ready."
+//                s << "RESUME\n" << std::flush;
+//                state=0;
+//            }
+        case "normal":
+            string threshold = threshold_turning(jrs.select(cmd_id)->word);
+
+            if (jrs.select(cmd_id)->cmscore > threshold)
+            {
+                resp = exec_cmd(jrs.select(cmd_id)->word, tid2);
+//                AQUES_Talk(resp);
             }
 
+
+//            switch(jrs.select(cmd_id)->word)
+//            {
+//                exec
+//            case "right":
+//
+//            case "left":
+//            case "go":
+//            case "back":
+//            case "stop":
+//            case "come":
+//            case "push":
+//            case "stay":
+//            case "sleep":
         }
     }
-//    while (1)
-//    {
-//        while (getline(s, line))
+//        if (state==1)   /// sleepの確認
 //        {
-//            /// This printf function show you all the text date sent from Julius
-//            printf("debug: %s\n", line.c_str());
-//
-//            /********************* An example of text data sent from Julius *********************
-//            > <STARTPROC/>
-//            > <SOURCEINFO SOURCEID="351" AZIMUTH="-80.001717" ELEVATION="16.702362" SEC="1568966750" USEC="466169"/>
-//            > <STARTRECOG SOURCEID="351"/>
-//            > <ENDRECOG SOURCEID="351"/>
-//            > <INPUTPARAM SOURCEID="351" FRAMES="272" MSEC="2720"/>
-//            > <RECOGOUT SOURCEID="351">
-//            >   <SHYPO RANK="1" SCORE="2123.848389" GRAM="0">
-//            >     <WHYPO WORD="<s>" CLASSID="0" PHONE="silB" CM="1.000"/>
-//            >     <WHYPO WORD="come" CLASSID="2" PHONE="k a m u" CM="0.373"/>
-//            >     <WHYPO WORD="</s>" CLASSID="1" PHONE="silE" CM="1.000"/>
-//            >   </SHYPO>
-//            > </RECOGOUT>
-//            > <RECOGEND SOURCEID="351" SEC="1568966753" USEC="334428"/>
-//            ********************************************************************************/
-//
-//            if (line.find("STARTPROC") != string::npos)
+//            if(word == "yes")
 //            {
-//                cm = "";
-//                word = "";
-//                msec = "";
-//                sourceid = "";
-//                azimuth = "";
+//                say_sleep();
+//                alutSleep(0.7);
+//                s << "DIE\n" << std::flush;
+//                return 0;
 //            }
-//            else if (line.find("SOURCEINFO") != string::npos)
+//            else
 //            {
-//                boost::regex_search(line, sourceid_match, sourceid_regex);
-//                sourceid = sourceid_match.str(1);
-//                sid = atoi(sourceid.c_str());     /// string -> int
-//
-//                boost::regex_search(line, azimuth_match, azimuth_regex);
-//                azimuth = azimuth_match.str(1);
-//                direction = atof(azimuth.c_str());
-//            }
-//            else if (line.find("INPUTPARAM") != string::npos)
-//            {
-//                boost::regex_search(line, msec_match, msec_regex);
-//                msec += msec_match.str(1);
-//                cmtime = atoi(msec.c_str());    /// string -> float
-//            }
-//            else if (line.find("CLASSID=\"2\"") != string::npos)
-//            {
-//                boost::regex_search(line, cm_match, cm_regex);
-//                cm = cm_match.str(1);
-//                cmscore = atof(cm.c_str());     /// string -> float
-//
-//                boost::regex_search(line, word_match, word_regex);
-//                word += word_match.str(1);
-//            }
-//            else if (line.find("/RECOGOUT") != string::npos)
-//            {
-//                printf("WORD=%s, SCORE=%f, TIME=%d, ID=%d, DIRECTION=%f\n",
-//                       word.c_str(), cmscore, cmtime, sid, direction);
-//                break;
+//                s << "PAUSE\n" << std::flush;
+//                say_ready();   /// "hello, master. i'm ready."
+//                s << "RESUME\n" << std::flush;
+//                state=0;
 //            }
 //        }
-//    }
+//        else if (state==2)   /// stayの確認
+//        {
+//            if(word == "ok")
+//            {
+//                s << "PAUSE\n" << std::flush;
+//                say_ready();   /// "hello, master. i'm ready."
+//                s << "RESUME\n" << std::flush;
+//                state=0;
+//            }
+//        }
+//        else if (word == "stop")
+//        {
+//            pthread_cancel(tid2);
+//            pthread_create(&tid2, NULL, cmd_stop, NULL);
+//            s << "PAUSE\n" << std::flush;
+//            say_stop();
+//            s << "RESUME\n" << std::flush;
+//        }
+//        else if (800 < cmtime && cmtime < 1150)
+//        {
+//            if (word == "right" && cmscore > border1)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_right, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_right();
+//                s << "RESUME\n" << std::flush;
+//            }
+//            else if (word == "left" && cmscore > border1)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_left, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_left();
+//                s << "RESUME\n" << std::flush;
+//            }
+//            else if (word == "go" && cmscore > 0.5)
+////            else if (word == "go" && cmscore > border1)
+//            {
+//                if (get_obs(&theta0, &r0)==0)
+//                {
+//                    pthread_cancel(tid2);
+//                    pthread_create(&tid2, NULL, cmd_go, NULL);
+//                    s << "PAUSE\n" << std::flush;
+//                    say_go();
+//                    s << "RESUME\n" << std::flush;
+//                }
+//                else
+//                {
+//                    pthread_cancel(tid2);
+//                    pthread_create(&tid2, NULL, cmd_stop, NULL);
+//                    s << "PAUSE\n" << std::flush;
+//                    say_no();
+//                    s << "RESUME\n" << std::flush;
+//                }
+//            }
+//            else if (word == "back" && cmscore > border1)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_back, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_back();
+//                s << "RESUME\n" << std::flush;
+//            }
+//            else if (word == "come" && cmscore > border1)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_come, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_come();
+//                s << "RESUME\n" << std::flush;
+//            }
+//            else if (word == "push" && cmscore > 0.5)
+//            {
+//                if (get_obs(&theta0, &r0)==1)
+//                {
+//                    pthread_cancel(tid2);
+//                    pthread_create(&tid2, NULL, cmd_look, &theta0);
+//                    s << "PAUSE\n" << std::flush;
+//                    say_push();
+//                    s << "RESUME\n" << std::flush;
+//                    if(abs(theta0)<=70)
+//                    {
+//                        pthread_cancel(tid2);
+//                        pthread_create(&tid2, NULL, cmd_push, &r0);
+//                    }
+//                }
+//                else
+//                {
+//                    pthread_cancel(tid2);
+//                    pthread_create(&tid2, NULL, cmd_stop, NULL);
+//                    s << "PAUSE\n" << std::flush;
+//                    say_no();
+//                    s << "RESUME\n" << std::flush;
+//                }
+//            }
+//            else if (word == "stay" && cmscore > border1)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_stop, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_stay();
+//                s << "RESUME\n" << std::flush;
+//                state = 2;
+//            }
+//            else if (word == "sleep" && cmscore > border1)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_stop, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_comfirm();
+//                s << "RESUME\n" << std::flush;
+//                state = 1;
+//            }/*
+//            else if (cmscore > border0)
+//            {
+//                pthread_cancel(tid2);
+//                pthread_create(&tid2, NULL, cmd_stop, NULL);
+//                s << "PAUSE\n" << std::flush;
+//                say_pardon();
+//                s << "RESUME\n" << std::flush;
+//            }*/
+//        }
+
     return 0;
 }/****************************************************************** END ***/
 

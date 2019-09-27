@@ -39,6 +39,7 @@
 		</Linker>
 		<Unit filename="SimpleGPIO.cpp" />
 		<Unit filename="aquestalk.cpp" />
+		<Unit filename="exec_cmd.cpp" />
 		<Unit filename="gpio.cpp" />
 		<Unit filename="i2c1_sensor.cpp" />
 		<Unit filename="jetduino_spi.cpp" />
