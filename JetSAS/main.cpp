@@ -142,11 +142,13 @@ int main(int argc, char *argv[])
     /// NakBotに関する変数の定義
     string mode = "normal";
     string resp;
+    float threshold;
+    int cmd_id;
     while (1)
     {
         while (getline(s, line))
         {
-            int cmd_id = jrs.jmerge_data(line);
+            cmd_id = jrs.jmerge_data(line);
             if (cmd_id != -1)
             {
                 cout << "id: " << jrs.select(cmd_id)->sid << " ,direction: " << jrs.select(cmd_id)->direction << " ,cmscore: " << jrs.select(cmd_id)->cmscore << endl;
@@ -154,10 +156,11 @@ int main(int argc, char *argv[])
             }
         }
 
+
         /// 命令の認識
-        switch(mode)
+        threshold = threshold_turning(jrs.select(cmd_id));
+        if (mode=="sleep")
         {
-        case "sleep":
 //                if(word == "yes")
 //                {
 //                    say_sleep();
@@ -172,7 +175,9 @@ int main(int argc, char *argv[])
 //                    s << "RESUME\n" << std::flush;
 //                    state=0;
 //                }
-        case "stay":
+        }
+        else if (mode == "stay")
+        {
 //            if(word == "ok")
 //            {
 //                s << "PAUSE\n" << std::flush;
@@ -180,14 +185,15 @@ int main(int argc, char *argv[])
 //                s << "RESUME\n" << std::flush;
 //                state=0;
 //            }
-        case "normal":
-            string threshold = threshold_turning(jrs.select(cmd_id)->word);
-
+        }
+        else if (mode == "normal")
+        {
             if (jrs.select(cmd_id)->cmscore > threshold)
             {
                 resp = exec_cmd(jrs.select(cmd_id)->word, tid2);
 //                AQUES_Talk(resp);
             }
+        }
 
 
 //            switch(jrs.select(cmd_id)->word)
@@ -203,8 +209,6 @@ int main(int argc, char *argv[])
 //            case "push":
 //            case "stay":
 //            case "sleep":
-        }
-    }
 //        if (state==1)   /// sleepの確認
 //        {
 //            if(word == "yes")
@@ -345,7 +349,7 @@ int main(int argc, char *argv[])
 //                s << "RESUME\n" << std::flush;
 //            }*/
 //        }
-
+    }
     return 0;
 }/****************************************************************** END ***/
 
