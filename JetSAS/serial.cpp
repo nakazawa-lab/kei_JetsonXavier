@@ -158,3 +158,28 @@ c=32;
         close(tty_fd);
 }
 *****/
+
+void jetsas0(char cmd, int prm1, int prm2)
+{
+    char dat[12];
+    if(cmd=='v')
+    {
+        prm1=10000-prm1; /// 左車輪の速度指令値
+        prm2=10000-prm2; /// 右車輪の速度指令値
+        sprintf(dat, "%c,%04d,%04d\n", cmd, prm2, prm1);
+    }
+    else
+    {
+        sprintf(dat, "%c,%04d,%04d\n", cmd, prm1, prm2);
+    }
+    send0(dat,12);
+}/****************************************************************** END ***/
+
+/************************************************************* モータ制御 ***
+void jetsas0(char cmd, int prm1, int prm2){
+	char dat[12];
+	sprintf(dat, "%c,%04d,%04d\n", cmd, prm1, prm2);
+///	printf("%s", dat);
+    send0(dat,12);
+}/****************************************************************** END ***/
+

@@ -15,6 +15,8 @@
 
 #ifndef JULIUS_STRUCT_H_
 #define JULIUS_STRUCT_H_
+#include <string>
+#include <map>
 
 using namespace std;
 

@@ -12,93 +12,16 @@
 #include <stdio.h>
 
 #include <pthread.h>///
+#include "open_urg_sensor.h"
 
 #include "julius_struct.h"
+#include "jetsas.h"
 
 using namespace std;
 
-string exec_cmd(string cmd, pthread_t tid)
-{
-    if (cmd=="right")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_right, NULL);
-        return "raito";
-    }
-    else if (cmd=="left")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_left, NULL);
-        return "rehuto";
-    }
-    else if (cmd=="go")
-    {
-        if (get_obs(&theta0, &r0)==0)
-        {
-            pthread_cancel(tid);
-            pthread_create(&tid, NULL, cmd_go, NULL);
-            return "go";
-        }
-         else
-        {
-            pthread_cancel(tid);
-            pthread_create(&tid, NULL, cmd_stop, NULL);
-            return "dekimasenn";
-        }
-    }
-    else if (cmd=="back")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_back, NULL);
-        return "bakku";
-    }
-    else if (cmd=="stop")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_stop, NULL);
-        return "sutoppu";
-    }
-    else if (cmd=="come")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_come, NULL);
-        return "camu";
-    }
-    else if (cmd=="push")
-    {
-        if (get_obs(&theta0, &r0)==1)
-        {
-            pthread_cancel(tid);
-            pthread_create(&tid, NULL, cmd_look, &theta0);
-            if(abs(theta0)<=70)
-            {
-                pthread_cancel(tid);
-                pthread_create(&tid, NULL, cmd_push, &r0);
-            }
-            return "pushu";
-        }
-        else
-        {
-            pthread_cancel(tid);
-            pthread_create(&tid, NULL, cmd_stop, NULL);
-            return "dekimasenn";
-        }
-    }
-    else if (cmd=="stay")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_stop, NULL);
-        mode = "stay";
-        return "sutei";
-    }
-    else if (cmd=="sleep")
-    {
-        pthread_cancel(tid);
-        pthread_create(&tid, NULL, cmd_stop, NULL);
-        mode = "sleep";
-        return "suriipu";
-    }
-}
+int get_obs(float *prm1, float *prm2);
+
+float theta0, r0;
 
 bool threshold_turning(_julius_result* jr)
 {

@@ -11,6 +11,8 @@
 #include "SimpleGPIO.h"
 #include "timer.h"
 //#include <urg_c/urg_sensor.h>
+#include "julius_struct.h"
+#include <string>
 
 #define LED_RED 0
 #define LED_GREEN 1
@@ -55,8 +57,18 @@ int lps25h(float g[]);
 int s11059(float g[]);
 int sensor(int, float *);
 
-
 int AQUE_init(void);///aquestalk.cpp
 int AQUES_Talk(char *);
 
+
+bool threshold_turning(_julius_result* jr);///exec_cmd.cpp
+void* cmd_right(void* pParam);
+void* cmd_left(void* pParam);
+void* cmd_go(void* pParam);
+void* cmd_back(void* pParam);
+void* cmd_stop(void* pParam);
+void* cmd_come(void* pParam);
+void* cmd_push(void* pParam);
+void* cmd_look(void* pParam);
+void get_encoder(int *time1, int *prm1, int *prm2, int *time2);
 //extern int open_urg_sensor(urg_t *urg, int argc, char *argv[]);

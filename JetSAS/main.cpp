@@ -71,10 +71,6 @@ int JetsonXavier_init()
 int main(int argc, char *argv[])
 {
     JuliusResults jrs;
-//    _julius_result test;
-//    test.sid = 1;
-//    jrs.jpush(&test);
-//    cout << jrs.select(1)->sid << endl;
 
     ///
     int fd,i,ret;
@@ -142,7 +138,7 @@ int main(int argc, char *argv[])
     /// NakBotに関する変数の定義
     string mode = "normal";
     string resp;
-    float threshold;
+    bool valid_flag;
     int cmd_id;
     while (1)
     {
@@ -158,7 +154,7 @@ int main(int argc, char *argv[])
 
 
         /// 命令の認識
-        threshold = threshold_turning(jrs.select(cmd_id));
+        valid_flag = threshold_turning(jrs.select(cmd_id));
         if (mode=="sleep")
         {
 //                if(word == "yes")
@@ -188,168 +184,170 @@ int main(int argc, char *argv[])
         }
         else if (mode == "normal")
         {
-            if (jrs.select(cmd_id)->cmscore > threshold)
+            if (valid_flag==true)
             {
-                resp = exec_cmd(jrs.select(cmd_id)->word, tid2);
+                resp = exec_cmd(jrs.select(cmd_id)->word, tid2, &mode);
 //                AQUES_Talk(resp);
             }
         }
-
-
-//            switch(jrs.select(cmd_id)->word)
-//            {
-//                exec
-//            case "right":
-//
-//            case "left":
-//            case "go":
-//            case "back":
-//            case "stop":
-//            case "come":
-//            case "push":
-//            case "stay":
-//            case "sleep":
-//        if (state==1)   /// sleepの確認
-//        {
-//            if(word == "yes")
-//            {
-//                say_sleep();
-//                alutSleep(0.7);
-//                s << "DIE\n" << std::flush;
-//                return 0;
-//            }
-//            else
-//            {
-//                s << "PAUSE\n" << std::flush;
-//                say_ready();   /// "hello, master. i'm ready."
-//                s << "RESUME\n" << std::flush;
-//                state=0;
-//            }
-//        }
-//        else if (state==2)   /// stayの確認
-//        {
-//            if(word == "ok")
-//            {
-//                s << "PAUSE\n" << std::flush;
-//                say_ready();   /// "hello, master. i'm ready."
-//                s << "RESUME\n" << std::flush;
-//                state=0;
-//            }
-//        }
-//        else if (word == "stop")
-//        {
-//            pthread_cancel(tid2);
-//            pthread_create(&tid2, NULL, cmd_stop, NULL);
-//            s << "PAUSE\n" << std::flush;
-//            say_stop();
-//            s << "RESUME\n" << std::flush;
-//        }
-//        else if (800 < cmtime && cmtime < 1150)
-//        {
-//            if (word == "right" && cmscore > border1)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_right, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_right();
-//                s << "RESUME\n" << std::flush;
-//            }
-//            else if (word == "left" && cmscore > border1)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_left, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_left();
-//                s << "RESUME\n" << std::flush;
-//            }
-//            else if (word == "go" && cmscore > 0.5)
-////            else if (word == "go" && cmscore > border1)
-//            {
-//                if (get_obs(&theta0, &r0)==0)
-//                {
-//                    pthread_cancel(tid2);
-//                    pthread_create(&tid2, NULL, cmd_go, NULL);
-//                    s << "PAUSE\n" << std::flush;
-//                    say_go();
-//                    s << "RESUME\n" << std::flush;
-//                }
-//                else
-//                {
-//                    pthread_cancel(tid2);
-//                    pthread_create(&tid2, NULL, cmd_stop, NULL);
-//                    s << "PAUSE\n" << std::flush;
-//                    say_no();
-//                    s << "RESUME\n" << std::flush;
-//                }
-//            }
-//            else if (word == "back" && cmscore > border1)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_back, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_back();
-//                s << "RESUME\n" << std::flush;
-//            }
-//            else if (word == "come" && cmscore > border1)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_come, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_come();
-//                s << "RESUME\n" << std::flush;
-//            }
-//            else if (word == "push" && cmscore > 0.5)
-//            {
-//                if (get_obs(&theta0, &r0)==1)
-//                {
-//                    pthread_cancel(tid2);
-//                    pthread_create(&tid2, NULL, cmd_look, &theta0);
-//                    s << "PAUSE\n" << std::flush;
-//                    say_push();
-//                    s << "RESUME\n" << std::flush;
-//                    if(abs(theta0)<=70)
-//                    {
-//                        pthread_cancel(tid2);
-//                        pthread_create(&tid2, NULL, cmd_push, &r0);
-//                    }
-//                }
-//                else
-//                {
-//                    pthread_cancel(tid2);
-//                    pthread_create(&tid2, NULL, cmd_stop, NULL);
-//                    s << "PAUSE\n" << std::flush;
-//                    say_no();
-//                    s << "RESUME\n" << std::flush;
-//                }
-//            }
-//            else if (word == "stay" && cmscore > border1)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_stop, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_stay();
-//                s << "RESUME\n" << std::flush;
-//                state = 2;
-//            }
-//            else if (word == "sleep" && cmscore > border1)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_stop, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_comfirm();
-//                s << "RESUME\n" << std::flush;
-//                state = 1;
-//            }/*
-//            else if (cmscore > border0)
-//            {
-//                pthread_cancel(tid2);
-//                pthread_create(&tid2, NULL, cmd_stop, NULL);
-//                s << "PAUSE\n" << std::flush;
-//                say_pardon();
-//                s << "RESUME\n" << std::flush;
-//            }*/
-//        }
     }
     return 0;
 }/****************************************************************** END ***/
 
+string exec_cmd(string cmd, pthread_t tid, string* mode_change_to)
+{
+    if (cmd=="right")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_right, NULL);
+        return "raito";
+    }
+    else if (cmd=="left")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_left, NULL);
+        return "rehuto";
+    }
+    else if (cmd=="go")
+    {
+        if (get_obs(&theta0, &r0)==0)
+        {
+            pthread_cancel(tid);
+            pthread_create(&tid, NULL, cmd_go, NULL);
+            return "go";
+        }
+         else
+        {
+            pthread_cancel(tid);
+            pthread_create(&tid, NULL, cmd_stop, NULL);
+            return "dekimasenn";
+        }
+    }
+    else if (cmd=="back")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_back, NULL);
+        return "bakku";
+    }
+    else if (cmd=="stop")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_stop, NULL);
+        return "sutoppu";
+    }
+    else if (cmd=="come")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_come, NULL);
+        return "camu";
+    }
+    else if (cmd=="push")
+    {
+        if (get_obs(&theta0, &r0)==1)
+        {
+            pthread_cancel(tid);
+            pthread_create(&tid, NULL, cmd_look, &theta0);
+            if(abs(theta0)<=70)
+            {
+                pthread_cancel(tid);
+                pthread_create(&tid, NULL, cmd_push, &r0);
+            }
+            return "pushu";
+        }
+        else
+        {
+            pthread_cancel(tid);
+            pthread_create(&tid, NULL, cmd_stop, NULL);
+            return "dekimasenn";
+        }
+    }
+    else if (cmd=="stay")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_stop, NULL);
+        *mode_change_to = "stay";
+        return "sutei";
+    }
+    else if (cmd=="sleep")
+    {
+        pthread_cancel(tid);
+        pthread_create(&tid, NULL, cmd_stop, NULL);
+        *mode_change_to = "sleep";
+        return "suriipu";
+    }
+}
+
+int get_obs(float *prm1, float *prm2)   /// 衝突判定
+{
+    int state=0;
+    long border_r=200;  /// 距離のしきい値[mm]
+    long border_rmax=500;  /// 最大距離のしきい値[mm]
+    long x, y, x1, y1, x2, y2;
+    long r_min=1000;
+    long r_max=0;
+    float phi, theta, x0, y0, r0;    /// x0,y0 = 目標地点
+
+    long max_distance;///for URG sensor
+    long min_distance;
+    long time_stamp;
+    int i, n;
+
+    urg_start_measurement(&urg, URG_DISTANCE, 1, 0); /// URG sample
+    n = urg_get_distance(&urg, urg_data, &time_stamp);
+    if (n < 0)
+    {
+        printf("urg_get_distance: %s\n", urg_error(&urg));
+//        urg_close(&urg);
+        return 0;
+    }
+
+    urg_distance_min_max(&urg, &min_distance, &max_distance);
+//    for (i = 0; i < n; i+=2)    /// 0 <= i <= 680, -120deg ~ 120deg
+    for (i = 84; i < 597; i+=2)    /// 90deg ~ -90deg
+    {
+        long distance = urg_data[i];
+        double radian;
+
+        if ((distance < min_distance) || (distance > max_distance)) continue;
+
+        radian =- urg_index2rad(&urg, i);   /// なんか逆になってるよ。
+        x=(distance * sin(radian));
+        y=(distance * cos(radian)-100);
+//        y=(distance * cos(radian));
+//        cout<<"the= "<<radian/M_PI*180<<endl;
+//        cout<<"(x,y)= "<<x<<", "<<y<<endl;
+//        cout<<"r= "<<distance<<endl;
+
+        if(distance < border_r) state=1;
+        if(distance < border_rmax && distance<r_min)
+        {
+            r_min=distance;
+            x1=x;
+            y1=y;
+        }
+        if(distance<border_rmax && distance>r_max)
+        {
+            r_max=distance;
+            x2=x;
+            y2=y;
+        }
+    }
+//	urg_close(&urg);
+
+    phi=atan((float)(y2-y1)/(x2-x1))/M_PI*180;
+    if (phi>=0) theta=90-phi;
+    else theta=-90-phi;
+    x0=(float)(x2*x2-x1*x1+y2*y2-y1*y1)*(x2-x1)/(2*(x2-x1)*(x2-x1)+2*(y2-y1)*(y2-y1));
+    y0=(float)(x2*x2-x1*x1+y2*y2-y1*y1)*(y2-y1)/(2*(x2-x1)*(x2-x1)+2*(y2-y1)*(y2-y1));
+    r0=(float)sqrt(x0*x0+y0*y0);
+//    cout<<"(x1,y1)= "<<x1<<", "<<y1<<"(x2,y2)"<<x2<<", "<<y2<<endl;
+//    cout<<"(x0,y0)= "<<x0<<", "<<y0<<endl;
+    cout<<"phi= "<<phi<<", theta= "<<theta<<endl;
+    cout<<"r= "<<r0<<endl;
+    *prm1=theta;
+    if(theta >= 0) *prm2=r0/1000;
+    else *prm2=-r0/1000;
+
+    if (state ==1) return 1;
+    else return 0;
+}
