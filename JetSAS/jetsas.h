@@ -45,6 +45,9 @@ int jetsas(int cmd, int prm1, int prm2);
 void* th_receive(void* pParam);
 int send(char dat[], int n);
 int send_tocos(int );
+void jetsas0(char cmd, int prm1, int prm2);
+void send0(char in_dat[],int n);
+void receive0(char *out_dat);
 
 int spi_open();///spi.cpp
 int spi_close();

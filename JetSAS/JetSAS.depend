@@ -142,7 +142,7 @@
 	<time.h>
 	"timer.h"
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/aquestalk.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/aquestalk.cpp
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>
@@ -152,18 +152,18 @@
 	<stdarg.h>
 	"jetsas.h"
 
-1569579915 /home/nvidia/projects/kei_JetsonXavier/JetSAS/jetsas.h
+1569657635 /home/nvidia/projects/kei_JetsonXavier/JetSAS/jetsas.h
 	"SimpleGPIO.h"
 	"timer.h"
 	"julius_struct.h"
 	<string>
 
-1569579915 /home/nvidia/projects/kei_JetsonXavier/JetSAS/SimpleGPIO.h
+1569656440 /home/nvidia/projects/kei_JetsonXavier/JetSAS/SimpleGPIO.h
 
-1569579915 /home/nvidia/projects/kei_JetsonXavier/JetSAS/timer.h
+1569656440 /home/nvidia/projects/kei_JetsonXavier/JetSAS/timer.h
 	<stdio.h>
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/gpio.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/gpio.cpp
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>
@@ -176,7 +176,7 @@
 	"jetsas.h"
 	"SimpleGPIO.h"
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/i2c1_sensor.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/i2c1_sensor.cpp
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>
@@ -185,7 +185,7 @@
 	<sys/ioctl.h>
 	"jetsas.h"
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/jetduino_spi.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/jetduino_spi.cpp
 	<iostream>
 	<linux/types.h>
 	<stdbool.h>
@@ -225,7 +225,7 @@
 	<linux/spi/spidev.h>
 	"SimpleGPIO.h"
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/lcd.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/lcd.cpp
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>
@@ -234,7 +234,7 @@
 	<sys/ioctl.h>
 	<stdarg.h>
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
+1569657819 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>
@@ -256,17 +256,17 @@
 	<boost/asio.hpp>
 	"julius_struct.h"
 
-1569579915 /home/nvidia/projects/kei_JetsonXavier/JetSAS/open_urg_sensor.h
+1569656440 /home/nvidia/projects/kei_JetsonXavier/JetSAS/open_urg_sensor.h
 	<urg_c/urg_sensor.h>
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/open_urg_sensor.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/open_urg_sensor.cpp
 	<urg_c/urg_sensor.h>
 	<urg_c/urg_utils.h>
 	<urg_c/urg_detect_os.h>
 	<string.h>
 	<stdio.h>
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/serial.cpp
+1569657109 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/serial.cpp
 	<stdlib.h>
 	<stdio.h>
 	<unistd.h>
@@ -275,7 +275,7 @@
 	<string.h>
 	"jetsas.h"
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/SimpleGPIO.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/SimpleGPIO.cpp
 	"SimpleGPIO.h"
 	<stdio.h>
 	<stdlib.h>
@@ -285,19 +285,29 @@
 	<fcntl.h>
 	<poll.h>
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/timer.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/timer.cpp
 	<stdio.h>
 	<time.h>
 	"timer.h"
 
-1569579915 /home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_struct.h
+1569656440 /home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_struct.h
 	<string>
 	<map>
 
-1569579915 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
+1569656440 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
 	<stdio.h>
 	<iostream>
 	<boost/regex.hpp>
 	<boost/asio.hpp>
 	"julius_struct.h"
+
+1569657866 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/exec_cmd.cpp
+	<iostream>
+	<stdio.h>
+	<unistd.h>
+	<pthread.h>
+	"open_urg_sensor.h"
+	"julius_struct.h"
+	"jetsas.h"
+	<time.h>
 

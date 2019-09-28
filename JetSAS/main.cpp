@@ -51,6 +51,11 @@ urg_t urg;  ///for URG sensor
 long *urg_data;
 ///extern int open_urg_sensor(urg_t *urg, int argc, char *argv[]);
 
+float theta0, r0;
+
+string exec_cmd(string cmd, pthread_t tid, string* mode_change_to);
+int get_obs(float *prm1, float *prm2);
+
 /******************************************************** JetsonTK1_init ***/
 int JetsonXavier_init()
 {

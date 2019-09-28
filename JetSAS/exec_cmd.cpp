@@ -10,6 +10,7 @@
 ***************************** Copyright NAKAZAWA Lab Dept. of SD.keio.jp ***/
 #include <iostream>
 #include <stdio.h>
+#include <unistd.h>
 
 #include <pthread.h>///
 #include "open_urg_sensor.h"
@@ -20,8 +21,12 @@
 using namespace std;
 
 int get_obs(float *prm1, float *prm2);
+int deg(float prm);
+int meter(float prm);
 
-float theta0, r0;
+float en_reso=5.95;      /// エンコーダの値（旋回）
+float en_meter=10.95;   /// エンコーダの値（並進）
+float al_delay=0.2;     /// 固定マイクの場合
 
 bool threshold_turning(_julius_result* jr)
 {
@@ -40,31 +45,11 @@ bool threshold_turning(_julius_result* jr)
     else return false;
 }
 
-//#include <iostream>
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <unistd.h>
-//#include <math.h>
-//#include <AL/alut.h>
-//
-//#include <cv.h>
-//#include <highgui.h>
-//#include "jetsas.h"
-//
-//using namespace std;
-//
-//float en_reso=5.95;      /// エンコーダの値（旋回）
-//float en_meter=10.95;   /// エンコーダの値（並進）
-////float al_delay=0.7;     /// ヘッドセットの場合
-//float al_delay=0.2;     /// 固定マイクの場合
-//
 int time1, rot1, rot2, time2;
 int i_time1, i_rot1, i_rot2, i_time2;
 int ret;
 float null;
 //
-/// 外部変数
-extern float doa;
 //
 ///********************************************************** get duration ***/
 //float getDuration(ALuint buffer)    /// 再生時間[秒]を返します
@@ -266,102 +251,52 @@ void* cmd_look(void* pParam)
 }
 void* cmd_come(void* pParam)
 {
-    float doa_f = doa;
-    if(doa_f>0)   /// θ>0 の時は右旋回
-    {
-        get_encoder(&i_time1, &i_rot1, &i_rot2, &i_time2);  /// (時間、左車輪、右車輪、時間)
-        rot1 = i_rot1;                                      /// エンコーダ初期値
-        rot2 = i_rot2;
-
-        jetsas0('m',0001,0000); /// motor_on=1
-        jetsas0('v',5100,4900);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < deg(doa_f))
-        {
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-
-        jetsas0('v',5200,5200);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < meter(1000))
-        {
-            if(get_obs(&null, &null)>0) break;              /// ぶつかる手前まで進む
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-    }
-    else                    /// θ<0 の時は左旋回
-    {
-        get_encoder(&i_time1, &i_rot1, &i_rot2, &i_time2);  /// (時間、左車輪、右車輪、時間)
-        rot1 = i_rot1;                                      /// エンコーダ初期値
-        rot2 = i_rot2;
-
-        jetsas0('m',0001,0000); /// motor_on=1
-        jetsas0('v',4900,5100);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < deg(doa_f))
-        {
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-
-        jetsas0('v',5200,5200);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < meter(1000))
-        {
-            if(get_obs(&null, &null)>0) break;              /// ぶつかる手前まで進む
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-    }
+//    float doa_f = doa;
+//    if(doa_f>0)   /// θ>0 の時は右旋回
+//    {
+//        get_encoder(&i_time1, &i_rot1, &i_rot2, &i_time2);  /// (時間、左車輪、右車輪、時間)
+//        rot1 = i_rot1;                                      /// エンコーダ初期値
+//        rot2 = i_rot2;
+//
+//        jetsas0('m',0001,0000); /// motor_on=1
+//        jetsas0('v',5100,4900);
+//        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < deg(doa_f))
+//        {
+//            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
+//        }
+//        jetsas0('v',5000,5000);
+//
+//        jetsas0('v',5200,5200);
+//        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < meter(1000))
+//        {
+//            if(get_obs(&null, &null)>0) break;              /// ぶつかる手前まで進む
+//            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
+//        }
+//        jetsas0('v',5000,5000);
+//    }
+//    else                    /// θ<0 の時は左旋回
+//    {
+//        get_encoder(&i_time1, &i_rot1, &i_rot2, &i_time2);  /// (時間、左車輪、右車輪、時間)
+//        rot1 = i_rot1;                                      /// エンコーダ初期値
+//        rot2 = i_rot2;
+//
+//        jetsas0('m',0001,0000); /// motor_on=1
+//        jetsas0('v',4900,5100);
+//        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < deg(doa_f))
+//        {
+//            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
+//        }
+//        jetsas0('v',5000,5000);
+//
+//        jetsas0('v',5200,5200);
+//        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < meter(1000))
+//        {
+//            if(get_obs(&null, &null)>0) break;              /// ぶつかる手前まで進む
+//            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
+//        }
+//        jetsas0('v',5000,5000);
+//    }
 }/****************************************************************** END ***/
-
-//nakbot
-void* cmd_nakbot(void* pParam)
-{
-    float doa_f = doa;
-    if(doa_f>0)   /// θ>0 の時は右旋回
-    {
-        get_encoder(&i_time1, &i_rot1, &i_rot2, &i_time2);  /// (時間、左車輪、右車輪、時間)
-        rot1 = i_rot1;                                      /// エンコーダ初期値
-        rot2 = i_rot2;
-
-        jetsas0('m',0001,0000); /// motor_on=1
-        jetsas0('v',5100,4900);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < deg(doa_f))
-        {
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-
-        jetsas0('v',5200,5200);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < meter(1000))
-        {
-            if(get_obs(&null, &null)>0) break;              /// ぶつかる手前まで進む
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-    }
-    else                    /// θ<0 の時は左旋回
-    {
-        get_encoder(&i_time1, &i_rot1, &i_rot2, &i_time2);  /// (時間、左車輪、右車輪、時間)
-        rot1 = i_rot1;                                      /// エンコーダ初期値
-        rot2 = i_rot2;
-
-        jetsas0('m',0001,0000); /// motor_on=1
-        jetsas0('v',4900,5100);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < deg(doa_f))
-        {
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-
-        jetsas0('v',5200,5200);
-        while(abs(rot1-i_rot1)+abs(rot2-i_rot2) < meter(1000))
-        {
-            if(get_obs(&null, &null)>0) break;              /// ぶつかる手前まで進む
-            get_encoder(&time1, &rot1, &rot2, &time2);      /// (時間、左車輪、右車輪、時間)
-        }
-        jetsas0('v',5000,5000);
-    }
-}
 
 /*************************************************** get encoder command ***/
 void get_encoder(int *time1, int *prm1, int *prm2, int *time2)  /// (時間、左車輪、右車輪、時間)
