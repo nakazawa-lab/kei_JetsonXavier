@@ -75,9 +75,6 @@ int JetsonXavier_init()
 /****************************************************************** main ***/
 int main(int argc, char *argv[])
 {
-    JuliusResults jrs;
-
-    ///
     int fd,i,ret;
     int addr = 0x3e;
     unsigned char buf[20];
@@ -120,6 +117,7 @@ int main(int argc, char *argv[])
     ip::tcp::endpoint ep(ADDR, port);
     ip::tcp::iostream s(ep);
 
+    JuliusResults jrs;
     string line;
     getline(s, line);   /// サーバーのチェック
     if (line.find("<STARTPROC/>") != string::npos)
@@ -138,6 +136,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    bool jinit_done = false;
+    while (getline(s, line))
+    {
+        AQUES_Talk("maikunotesuto");
+        jinit_done = jrs.jinit(line);
+        sleep(5);
+        if (jinit_done==true) break;
+    }
+
     /******************************************************** end ***/
 
     /// NakBotに関する変数の定義
@@ -150,16 +157,14 @@ int main(int argc, char *argv[])
         while (getline(s, line))
         {
             cmd_id = jrs.jmerge_data(line);
-            if (cmd_id != -1)
+            if (cmd_id >= 0)
             {
                 cout << "id: " << jrs.select(cmd_id)->sid << " ,direction: " << jrs.select(cmd_id)->direction << " ,cmscore: " << jrs.select(cmd_id)->cmscore << endl;
                 break;
             }
         }
-
-
-        /// 命令の認識
         valid_flag = threshold_turning(jrs.select(cmd_id));
+        /// 命令の認識
         if (mode=="sleep")
         {
 //                if(word == "yes")

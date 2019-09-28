@@ -20,7 +20,7 @@
 
 using namespace std;
 
-string line, sourceid, azimuth, cm, word, msec;
+string line, sourceid, azimuth, cm, word, msec, sec, usec;
 float cmscore, direction;
 int sid, duration, lineid;
 bool recogout = false;
@@ -37,6 +37,10 @@ boost::regex sourceid_regex("SOURCEID=\"([^\"]+)\"");
 boost::smatch sourceid_match;
 boost::regex azimuth_regex("AZIMUTH=\"([^\"]+)\"");
 boost::smatch azimuth_match;
+boost::regex sec_regex("SEC=\"([^\"]+)\"");
+boost::smatch sec_match;
+boost::regex usec_regex("USEC=\"([^\"]+)\"");
+boost::smatch usec_match;
 
 JuliusResults::JuliusResults()
 {
@@ -49,7 +53,7 @@ _julius_result* JuliusResults::select(int id)
     return results_map.at(id);
 }
 
-/// results_mapに新しい要素を追加する。
+/// jaddはresults_mapに新しい要素を追加する関数
 void JuliusResults::jadd(_julius_result* jr)
 {
     results_map[jr->sid] = jr;
@@ -71,9 +75,9 @@ void JuliusResults::jadd(_julius_result* jr)
 > <RECOGEND SOURCEID="351" SEC="1568966753" USEC="334428"/>
 ***********************************************************************************************************/
 
+/// jmerge_dataは上記のようなデータが送られてくるので、それを適切にデータに格納する関数
 int JuliusResults::jmerge_data(string line)
 {
-//    cout << "input line: " << line << endl;
     /// はじめに"SOURCEINFO"を見つけたら_julius_resultオブジェクトを生成
     if (line.find("SOURCEINFO") != string::npos)
     {
@@ -100,14 +104,26 @@ int JuliusResults::jmerge_data(string line)
         if (line.find("INPUTPARAM") != string::npos)
         {
             boost::regex_search(line, msec_match, msec_regex);
-            msec += msec_match.str(1);
+            msec = msec_match.str(1);
             select(lineid)->duration = atoi(msec.c_str());
+            return -1;
         }
         else if (line.find("<RECOGOUT") != string::npos)
         {
             recogout = true;
+            return -1;
         }
-        return -1;
+        else if (line.find("RECOGEND") != string::npos)
+        {
+            boost::regex_search(line, sec_match, sec_regex);
+            sec = sec_match.str(1);
+            boost::regex_search(line, usec_match, usec_regex);
+            usec = usec_match.str(1);
+            select(lineid)->endtime = atof(sec.c_str()) + 10^-3 * atof(usec.c_str());
+
+            recogout = false;
+            return lineid;
+        }
     }
     else if (recogout==true && line.find("CLASSID=\"2\"") != string::npos)
     {
@@ -121,11 +137,22 @@ int JuliusResults::jmerge_data(string line)
     }
     else if (line.find("</RECOGOUT>") != string::npos)
     {
-        recogout = false;
-        return lineid;
+//        recogout = false;
+//        return lineid;
+        return -1;
     }
     else
     {
-        return -1;
+        return -2;
     }
 }
+
+bool JuliusResults::jinit(string line)
+{
+    id = jmerge_data(line);
+    if (id>=0 && select(id).word=="MICTEST")
+    {
+        init_id = id;
+    }
+}
+
