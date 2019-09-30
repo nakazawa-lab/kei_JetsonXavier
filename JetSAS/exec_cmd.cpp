@@ -28,6 +28,15 @@ float en_reso=5.95;      /// エンコーダの値（旋回）
 float en_meter=10.95;   /// エンコーダの値（並進）
 float al_delay=0.2;     /// 固定マイクの場合
 
+bool is_nakbot_voice(_julius_result* jr, _julius_result* jr_init, float said_stamp)
+{
+    float tth = 0.5; /// TimeThreshold.ロボットが喋った瞬間から0.5秒間は音声認識を行わない
+    float dth = 5; /// DirectionThreshold.ロボットのスピーカー方向±5度の方向からの音声は棄却
+    float d = jr_init->direction;
+    if (jr->endtime_stamp < said_stamp && d - dth < d && d < d + dth) return true;
+    else false;
+}
+
 bool threshold_turning(_julius_result* jr)
 {
     if (jr->word=="yes" || jr->word=="ok" || jr->word=="stop") return true;

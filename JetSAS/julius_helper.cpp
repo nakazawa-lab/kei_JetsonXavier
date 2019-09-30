@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <time.h>
 
 /// 20190911 for speech recognition
 #include <boost/regex.hpp>
@@ -119,7 +120,7 @@ int JuliusResults::jmerge_data(string line)
             sec = sec_match.str(1);
             boost::regex_search(line, usec_match, usec_regex);
             usec = usec_match.str(1);
-            select(lineid)->endtime = atof(sec.c_str()) + 10^-3 * atof(usec.c_str());
+            select(lineid)->endtime_stamp = atof(sec.c_str()) + 0.001 * 0.001 * atof(usec.c_str());
 
             recogout = false;
             return lineid;
@@ -150,9 +151,12 @@ int JuliusResults::jmerge_data(string line)
 bool JuliusResults::jinit(string line)
 {
     id = jmerge_data(line);
-    if (id>=0 && select(id).word=="MICTEST")
+    if (id>=0 && select(id)->word=="MICTEST")
     {
         init_id = id;
+
+        return true;
     }
+    else return false;
 }
 

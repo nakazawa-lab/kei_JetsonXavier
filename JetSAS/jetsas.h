@@ -65,6 +65,7 @@ int AQUES_Talk(char *);
 
 
 bool threshold_turning(_julius_result* jr);///exec_cmd.cpp
+bool is_nakbot_voice(_julius_result* jr, _julius_result* jr_init, float said_stamp);
 void* cmd_right(void* pParam);
 void* cmd_left(void* pParam);
 void* cmd_go(void* pParam);

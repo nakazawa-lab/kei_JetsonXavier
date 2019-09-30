@@ -25,15 +25,16 @@ struct _julius_result
 {
     int sid, duration;
     string word;
-    float cmscore, direction, endtime;
+    float cmscore, direction, endtime_stamp;
 };
 
 class JuliusResults
 {
     private:
-        int id, init_id;
+        int id;
         map<int, _julius_result*> results_map;
     public:
+        int init_id;
         /// julius_helper.cppで定義しています
         JuliusResults();
         _julius_result* select(int id);

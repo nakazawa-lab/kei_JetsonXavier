@@ -53,7 +53,8 @@ long *urg_data;
 
 float theta0, r0;
 
-string exec_cmd(string cmd, pthread_t tid, string* mode_change_to);
+char* exec_cmd(string cmd, pthread_t tid, string* mode_change_to);
+float talk(char* s);
 int get_obs(float *prm1, float *prm2);
 
 /******************************************************** JetsonTK1_init ***/
@@ -149,9 +150,10 @@ int main(int argc, char *argv[])
 
     /// NakBotに関する変数の定義
     string mode = "normal";
-    string resp;
+    char* resp;
     bool valid_flag;
     int cmd_id;
+    float said_stamp;
     while (1)
     {
         while (getline(s, line))
@@ -163,8 +165,12 @@ int main(int argc, char *argv[])
                 break;
             }
         }
-        valid_flag = threshold_turning(jrs.select(cmd_id));
-        /// 命令の認識
+
+        ///　しきい値処理
+        if (is_nakbot_voice(jrs.select(cmd_id), jrs.select(jrs.init_id), said_stamp)==true) valid_flag = false;
+        else valid_flag = threshold_turning(jrs.select(cmd_id));
+
+        /// 命令の実行
         if (mode=="sleep")
         {
 //                if(word == "yes")
@@ -198,13 +204,14 @@ int main(int argc, char *argv[])
             {
                 resp = exec_cmd(jrs.select(cmd_id)->word, tid2, &mode);
 //                AQUES_Talk(resp);
+                said_stamp = talk(resp);
             }
         }
     }
     return 0;
 }/****************************************************************** END ***/
 
-string exec_cmd(string cmd, pthread_t tid, string* mode_change_to)
+char* exec_cmd(string cmd, pthread_t tid, string* mode_change_to)
 {
     if (cmd=="right")
     {
@@ -226,7 +233,7 @@ string exec_cmd(string cmd, pthread_t tid, string* mode_change_to)
             pthread_create(&tid, NULL, cmd_go, NULL);
             return "go";
         }
-         else
+        else
         {
             pthread_cancel(tid);
             pthread_create(&tid, NULL, cmd_stop, NULL);
@@ -285,6 +292,21 @@ string exec_cmd(string cmd, pthread_t tid, string* mode_change_to)
         *mode_change_to = "sleep";
         return "suriipu";
     }
+}
+
+float talk(char* s)
+{
+    AQUES_Talk(s);
+
+    struct timeval _time;
+    gettimeofday(&_time, NULL);
+    /// たぶんタイムスタンプ
+    long sec = _time.tv_sec;
+    //マイクロ秒　0から999999までの値を取り、一杯になると秒がカウントアップされていく
+    long usec = _time.tv_usec;
+
+    float said_stamp = (float)sec + 0.001 * 0.001 * (float)usec;
+    return said_stamp;
 }
 
 int get_obs(float *prm1, float *prm2)   /// 衝突判定
