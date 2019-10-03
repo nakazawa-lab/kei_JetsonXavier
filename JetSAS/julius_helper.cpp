@@ -125,6 +125,7 @@ int JuliusResults::jmerge_data(string line)
             recogout = false;
             return lineid;
         }
+        else return -1;
     }
     else if (recogout==true && line.find("CLASSID=\"2\"") != string::npos)
     {
@@ -144,7 +145,7 @@ int JuliusResults::jmerge_data(string line)
     }
     else
     {
-        return -2;
+        return -1;
     }
 }
 
