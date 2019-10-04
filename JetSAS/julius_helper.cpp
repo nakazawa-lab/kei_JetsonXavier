@@ -161,3 +161,18 @@ bool JuliusResults::jinit(string line)
     else return false;
 }
 
+void JuliusResults::emit_log(int cmd_id, string format)
+{
+    if (format=="console")
+    {
+        cout <<
+             "word: " << select(cmd_id)->word << ", id: " << select(cmd_id)->sid <<
+             " ,direction: " << select(cmd_id)->direction << " ,cmscore: " << select(cmd_id)->cmscore
+             << endl;
+    }
+    if (format=="excel")
+    {
+
+    }
+}
+

@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
             cmd_id = jrs.jmerge_data(line);
             if (cmd_id >= 0)
             {
-                cout << "word: " << jrs.select(cmd_id)->word << ", id: " << jrs.select(cmd_id)->sid << " ,direction: " << jrs.select(cmd_id)->direction << " ,cmscore: " << jrs.select(cmd_id)->cmscore << ", mode: " << mode << endl;
+                jrs.emit_log(cmd_id, "console");
                 break;
             }
         }

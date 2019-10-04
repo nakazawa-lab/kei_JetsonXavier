@@ -41,6 +41,7 @@ class JuliusResults
         void jadd(_julius_result* jr);
         int jmerge_data(string line);
         bool jinit(string line);
+        void emit_log(int cmd_id, string format);
 };
 
 #endif /* JULIUS_STRUCT_H_*/
