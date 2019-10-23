@@ -166,13 +166,27 @@ void JuliusResults::emit_log(int cmd_id, string format)
     if (format=="console")
     {
         cout <<
-             "word: " << select(cmd_id)->word << ", id: " << select(cmd_id)->sid <<
-             " ,direction: " << select(cmd_id)->direction << " ,cmscore: " << select(cmd_id)->cmscore
+             "id: " << select(cmd_id)->sid <<
+             " ,direction: " << select(cmd_id)->direction <<
+             " ,word: " << select(cmd_id)->word <<
+             " ,cmscore: " << select(cmd_id)->cmscore
              << endl;
     }
     if (format=="excel")
     {
-
+        if (excel_title == false)
+        {
+            cout <<
+                 "id|direction|word|cmscore"
+                 << endl;
+            excel_title = true;
+        }
+        cout <<
+             select(cmd_id)->sid << "|" <<
+             select(cmd_id)->direction << "|" <<
+             select(cmd_id)->word << "|" <<
+             select(cmd_id)->cmscore
+             << endl;
     }
 }
 

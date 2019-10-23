@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
             cmd_id = jrs.jmerge_data(line);
             if (cmd_id >= 0)
             {
-                jrs.emit_log(cmd_id, "console");
+                jrs.emit_log(cmd_id, "excel");
                 break;
             }
         }

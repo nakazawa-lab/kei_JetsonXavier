@@ -35,6 +35,7 @@ class JuliusResults
         map<int, _julius_result*> results_map;
     public:
         int init_id;
+        bool excel_title = false;
         /// julius_helper.cppで定義しています
         JuliusResults();
         _julius_result* select(int id);
