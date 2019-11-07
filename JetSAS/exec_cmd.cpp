@@ -34,7 +34,8 @@ bool is_nakbot_voice(_julius_result* jr, _julius_result* jr_init, float said_sta
     float dth = 5; /// DirectionThreshold.ロボットのスピーカー方向±5度の方向からの音声は棄却
     float d = jr_init->direction;
     if (jr->endtime_stamp < said_stamp && d - dth < d && d < d + dth) return true;
-    else false;
+//    else false;
+    else true;
 }
 
 bool threshold_turning(_julius_result* jr)

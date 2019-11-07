@@ -138,13 +138,13 @@ int main(int argc, char *argv[])
     }
 
     bool jinit_done = false;
-    while (getline(s, line))
-    {
-        AQUES_Talk("maikunotesuto");
-        jinit_done = jrs.jinit(line);
-        sleep(5);
-        if (jinit_done==true) break;
-    }
+//    while (getline(s, line))
+//    {
+//        AQUES_Talk("maikunotesuto");
+//        jinit_done = jrs.jinit(line);
+//        sleep(5);
+//        if (jinit_done==true) break;
+//    }
 
     /******************************************************** end ***/
 
@@ -158,28 +158,33 @@ int main(int argc, char *argv[])
     {
         while (getline(s, line))
         {
+            /// ここをコメントアウトすると入力文字列lineの中身を見れる
+//            cout << line << endl;
             cmd_id = jrs.jmerge_data(line);
             if (cmd_id >= 0)
             {
-                cout << "id: " << jrs.select(cmd_id)->sid << " ,direction: " << jrs.select(cmd_id)->direction << " ,cmscore: " << jrs.select(cmd_id)->cmscore << endl;
+                jrs.emit_log(cmd_id, "excel");
                 break;
             }
         }
 
         ///　しきい値処理
-        if (is_nakbot_voice(jrs.select(cmd_id), jrs.select(jrs.init_id), said_stamp)==true) valid_flag = false;
-        else valid_flag = threshold_turning(jrs.select(cmd_id));
+//        if (is_nakbot_voice(jrs.select(cmd_id), jrs.select(jrs.init_id), said_stamp)==true) valid_flag = false;
+//        else valid_flag = threshold_turning(jrs.select(cmd_id));
 
+        valid_flag = threshold_turning(jrs.select(cmd_id));
+//
         /// 命令の実行
         if (mode=="sleep")
         {
-//                if(word == "yes")
-//                {
+                if(jrs.select(cmd_id)->word == "yes")
+                {
+                    mode = "normal";
 //                    say_sleep();
 //                    alutSleep(0.7);
 //                    s << "DIE\n" << std::flush;
 //                    return 0;
-//                }
+                }
 //                else
 //                {
 //                    s << "PAUSE\n" << std::flush;
@@ -190,13 +195,14 @@ int main(int argc, char *argv[])
         }
         else if (mode == "stay")
         {
-//            if(word == "ok")
-//            {
+            if(jrs.select(cmd_id)->word == "ok")
+            {
+                mode = "normal";
 //                s << "PAUSE\n" << std::flush;
 //                say_ready();   /// "hello, master. i'm ready."
 //                s << "RESUME\n" << std::flush;
 //                state=0;
-//            }
+            }
         }
         else if (mode == "normal")
         {
@@ -204,7 +210,7 @@ int main(int argc, char *argv[])
             {
                 resp = exec_cmd(jrs.select(cmd_id)->word, tid2, &mode);
 //                AQUES_Talk(resp);
-                said_stamp = talk(resp);
+//                said_stamp = talk(resp);
             }
         }
     }

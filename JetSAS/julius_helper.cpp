@@ -125,6 +125,7 @@ int JuliusResults::jmerge_data(string line)
             recogout = false;
             return lineid;
         }
+        else return -1;
     }
     else if (recogout==true && line.find("CLASSID=\"2\"") != string::npos)
     {
@@ -144,7 +145,7 @@ int JuliusResults::jmerge_data(string line)
     }
     else
     {
-        return -2;
+        return -1;
     }
 }
 
@@ -158,5 +159,34 @@ bool JuliusResults::jinit(string line)
         return true;
     }
     else return false;
+}
+
+void JuliusResults::emit_log(int cmd_id, string format)
+{
+    if (format=="console")
+    {
+        cout <<
+             "id: " << select(cmd_id)->sid <<
+             " ,direction: " << select(cmd_id)->direction <<
+             " ,word: " << select(cmd_id)->word <<
+             " ,cmscore: " << select(cmd_id)->cmscore
+             << endl;
+    }
+    if (format=="excel")
+    {
+        if (excel_title == false)
+        {
+            cout <<
+                 "id|direction|word|cmscore"
+                 << endl;
+            excel_title = true;
+        }
+        cout <<
+             select(cmd_id)->sid << "|" <<
+             select(cmd_id)->direction << "|" <<
+             select(cmd_id)->word << "|" <<
+             select(cmd_id)->cmscore
+             << endl;
+    }
 }
 

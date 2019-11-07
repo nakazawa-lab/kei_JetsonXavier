@@ -35,12 +35,14 @@ class JuliusResults
         map<int, _julius_result*> results_map;
     public:
         int init_id;
+        bool excel_title = false;
         /// julius_helper.cppで定義しています
         JuliusResults();
         _julius_result* select(int id);
         void jadd(_julius_result* jr);
         int jmerge_data(string line);
         bool jinit(string line);
+        void emit_log(int cmd_id, string format);
 };
 
 #endif /* JULIUS_STRUCT_H_*/
