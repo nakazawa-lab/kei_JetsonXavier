@@ -17,13 +17,14 @@
 #define JULIUS_STRUCT_H_
 #include <string>
 #include <map>
+#include <time.h>
 
 using namespace std;
 
 /// _julius_result is each result for utterance
 struct _julius_result
 {
-    int sid, duration;
+    int sid, duration, recog_start_time;
     string word;
     float cmscore, direction, endtime_stamp;
 };
@@ -33,6 +34,7 @@ class JuliusResults
     private:
         int id;
         map<int, _julius_result*> results_map;
+        time_t start_time;
     public:
         int init_id;
         bool excel_title = false;
