@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <iostream>
-#include <time.h>
+#include<fstream>
 
 /// 20190911 for speech recognition
 #include <boost/regex.hpp>
@@ -25,6 +25,7 @@ string line, sourceid, azimuth, cm, word, msec, sec, usec;
 float cmscore, direction;
 int sid, duration, lineid;
 bool recogout = false;
+ofstream outputfile("/home/nvidia/Desktop/output.txt");
 
 boost::regex score_regex("SCORE=\"([^\"]+)\"");
 boost::smatch score_match;
@@ -47,6 +48,7 @@ JuliusResults::JuliusResults()
 {
     _julius_result* error_handling;
     results_map[-1] = error_handling;
+    start_time = time(NULL);
 }
 
 _julius_result* JuliusResults::select(int id)
@@ -91,6 +93,10 @@ int JuliusResults::jmerge_data(string line)
         boost::regex_search(line, azimuth_match, azimuth_regex);
         azimuth = azimuth_match.str(1);
         tmp->direction = atof(azimuth.c_str());   /// string -> float
+
+        time_t t;
+        t = time(NULL);
+        tmp->recog_start_time = int(t - start_time);
 
         jadd(tmp);
         return -1;
@@ -177,16 +183,30 @@ void JuliusResults::emit_log(int cmd_id, string format)
         if (excel_title == false)
         {
             cout <<
-                 "id|direction|word|cmscore"
+                 "id|direction|word|cmscore|time|duration"
                  << endl;
             excel_title = true;
+            outputfile << "id|direction|word|cmscore|time|duration" << endl;
         }
-        cout <<
-             select(cmd_id)->sid << "|" <<
-             select(cmd_id)->direction << "|" <<
-             select(cmd_id)->word << "|" <<
-             select(cmd_id)->cmscore
-             << endl;
+        if (select(cmd_id)->word != "")
+        {
+            cout <<
+            select(cmd_id)->sid << "|" <<
+            select(cmd_id)->direction << "|" <<
+            select(cmd_id)->word << "|" <<
+            select(cmd_id)->cmscore << "|" <<
+            select(cmd_id)->recog_start_time << "|" <<
+            select(cmd_id)->duration
+            << endl;
+            outputfile <<
+            select(cmd_id)->sid << "|" <<
+            select(cmd_id)->direction << "|" <<
+            select(cmd_id)->word << "|" <<
+            select(cmd_id)->cmscore << "|" <<
+            select(cmd_id)->recog_start_time << "|" <<
+            select(cmd_id)->duration
+            << endl;
+        }
     }
 }
 

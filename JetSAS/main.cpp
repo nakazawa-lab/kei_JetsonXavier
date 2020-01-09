@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     getline(s, line);   /// サーバーのチェック
     if (line.find("<STARTPROC/>") != string::npos)
     {
-        printf("============= Started speech recognition =============\n");
+        printf("============= Started speech recognition! =============\n");
 //        s << "PAUSE\n" << std::flush;
 //        alutSleep(0.7);
 //        say_ready();   /// "hello, master. i'm ready."
@@ -165,14 +165,15 @@ int main(int argc, char *argv[])
             {
                 jrs.emit_log(cmd_id, "excel");
                 break;
+                delete jrs.select(cmd_id);
             }
         }
 
         ///　しきい値処理
 //        if (is_nakbot_voice(jrs.select(cmd_id), jrs.select(jrs.init_id), said_stamp)==true) valid_flag = false;
 //        else valid_flag = threshold_turning(jrs.select(cmd_id));
-
-        valid_flag = threshold_turning(jrs.select(cmd_id));
+        valid_flag = true;
+//        valid_flag = threshold_turning(jrs.select(cmd_id));
 //
         /// 命令の実行
         if (mode=="sleep")
@@ -213,6 +214,7 @@ int main(int argc, char *argv[])
 //                said_stamp = talk(resp);
             }
         }
+
     }
     return 0;
 }/****************************************************************** END ***/
@@ -235,7 +237,9 @@ char* exec_cmd(string cmd, pthread_t tid, string* mode_change_to)
     {
         if (get_obs(&theta0, &r0)==0)
         {
+            cout << "BBBBBBBBBBBBBBB" << endl;
             pthread_cancel(tid);
+            cout << "AAAAAAAAAAAAAAAAAa" << endl;
             pthread_create(&tid, NULL, cmd_go, NULL);
             return "go";
         }
@@ -334,7 +338,7 @@ int get_obs(float *prm1, float *prm2)   /// 衝突判定
     n = urg_get_distance(&urg, urg_data, &time_stamp);
     if (n < 0)
     {
-        printf("urg_get_distance: %s\n", urg_error(&urg));
+//        printf("urg_get_distance: %s\n", urg_error(&urg));
 //        urg_close(&urg);
         return 0;
     }
