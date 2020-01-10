@@ -100,7 +100,11 @@
 	<linux/spi/spidev.h>
 	"SimpleGPIO.h"
 
+<<<<<<< HEAD
 1577435063 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
+=======
+1575276026 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
+>>>>>>> a35413432b1648f089f7d85c939a35036ba7abd4
 	<stdio.h>
 	<iostream>
 	<fstream>
@@ -117,7 +121,11 @@
 	<sys/ioctl.h>
 	<stdarg.h>
 
+<<<<<<< HEAD
 1578562497 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
+=======
+1575283668 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
+>>>>>>> a35413432b1648f089f7d85c939a35036ba7abd4
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>

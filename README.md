@@ -14,6 +14,10 @@ cd speech_recognition
 
 ./1_Julius.sh 
 
+cd projects/kei_JetsonXavier/
+sudo codeblocks JetSAS/JetSAS.cbp
+ 
+これはjulius moduleのテスト用のコマンド
 cd ~/HARK/julius-4.2.3-hark/jcontrol
 
 ./jcontrol xavier

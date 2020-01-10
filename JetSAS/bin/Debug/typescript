@@ -1,0 +1,157 @@
+Script started on 2019-10-24 12:59:54+0900
+]0;root@xavier: ~/projects/kei_JetsonXavier/JetSAS/bin/Debug[01;32mroot@xavier[00m:[01;34m~/projects/kei_JetsonXavier/JetSAS/bin/Debug[00m# exit./JetSAS [5Pexit./JetSAS 
+JET_TIMER Constructor 
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-root'
+Start JetSAS on NakBot
+i2c-8=15 for LCD
+i2c write failed at LCD_init1
+i2c write failed at LCD_init2
+tty_fd0=21 
+i2c-0=15 for sensors 
+i2c write failed at init1
+i2c write failed at init2
+i2c write failed at init3
+urg_open: /dev/ttyACM0, 115200: could not open serial device.
+i2c(LCD) write 1 failed ret=-1
+i2c(LCD) write 1 failed ret=-1
+1571889599 163688230 
+jt time0 0[sec] 173958[nsec]
+received from NakBot 0 
+============= Started speech recognition =============
+id|direction|word|cmscore
+8|-5.00109|stop|0.979
+9|9.99828|come|0.773
+10|-9.99828|come|0.884
+11|35.0008|go|0.703
+12|-5.00109|nakbot|0.919
+13|65.0001|come|0.925
+14|-19.9995|come|0.79
+15|45|sleep|0.852
+16|-19.9995|come|1
+18|-54.9992|come|0.871
+17|-24.9999|come|0.948
+19|9.99828|come|0.751
+21|70.0005|nakbot|0.506
+20|-60.0006|push|0.396
+22|14.9996|come|0.993
+23|-54.9992|come|0.809
+24|70.0005|nakbot|0.31
+
+
+
+
+
+
+25|-75.0004|come|0.948
+
+
+
+
+26|29.9994|no|0.555
+
+
+
+
+
+
+
+
+
+27|-65.0001|left|0.903
+28|-49.9976|go|0.775
+29|-24.9999|go|0.958
+30|70.0005|back|0.435
+32|60.0006|come|0.96
+31|-70.0005|nakbot|0.465
+33|84.9989|come|0.994
+34|-70.0005|come|0.741
+36|29.9994|left|0.796
+37|75.0004|come|0.883
+35|-70.0005|come|0.784
+
+
+
+
+
+
+
+
+39|-5.00109|go|0.761
+38|-75.0004|left|0.824
+
+
+
+
+
+
+
+40|-75.0004|stop|0.582
+41|-84.9989|left|0.455
+42|-70.0005|left|0.839
+43|-80.0017|stop|0.781
+44|-80.0017|nakbot|0.549
+45|-65.0001|left|0.802
+46|-65.0001|stop|0.895
+47|-70.0005|left|0.597
+48|70.0005|left|0.743
+50|-14.9996|nakbot|0.992
+49|-75.0004|nakbot|0.996
+51|70.0005|nakbot|0.96
+52|70.0005|come|0.998
+53|-80.0017|stop|0.496
+
+
+
+
+
+54|65.0001|go|0.993
+
+
+
+
+
+
+
+55|-84.9989|come|0.937
+56|65.0001|come|0.679
+
+
+
+
+57|-75.0004|no|0.338
+
+
+
+58|60.0006|no|0.72
+
+
+
+
+
+59|65.0001|go|0.591
+60|-84.9989|left|0.468
+61|-84.9989|no|0.437
+62|-80.0017|no|0.439
+63|-75.0004|left|0.445
+64|54.9992|no|0.678
+65|65.0001|stop|0.574
+66|-75.0004|no|0.586
+67|80.0017|left|0.645
+68|-84.9989|go|0.516
+69|80.0017|come|0.893
+70|-80.0017|nakbot|0.507
+71|70.0005|no|0.584
+72|-84.9989|go|0.515
+73|65.0001|no|0.434
+74|-70.0005|nakbot|0.729
+75|65.0001|come|0.913
+76|-70.0005|no|0.804
+
+
+
+77|65.0001|come|0.863
+^C
+]0;root@xavier: ~/projects/kei_JetsonXavier/JetSAS/bin/Debug[01;32mroot@xavier[00m:[01;34m~/projects/kei_JetsonXavier/JetSAS/bin/Debug[00m# exo[Kit
+exit
+
+Script done on 2019-10-24 13:03:09+0900

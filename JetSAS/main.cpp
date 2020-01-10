@@ -188,10 +188,11 @@ int main(int argc, char *argv[])
                 }
 //                else
 //                {
-//                    s << "PAUSE\n" << std::flush;
-//                    say_ready();   /// "hello, master. i'm ready."
-//                    s << "RESUME\n" << std::flush;
-//                    state=0;
+//                    mode = "normal";
+////                    say_sleep();
+////                    alutSleep(0.7);
+////                    s << "DIE\n" << std::flush;
+////                    return 0;
 //                }
         }
         else if (mode == "stay")
