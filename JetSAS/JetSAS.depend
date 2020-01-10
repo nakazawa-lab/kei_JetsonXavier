@@ -100,14 +100,40 @@
 	<linux/spi/spidev.h>
 	"SimpleGPIO.h"
 
-<<<<<<< HEAD
-1577435063 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
-=======
-1575276026 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
->>>>>>> a35413432b1648f089f7d85c939a35036ba7abd4
+1569656440 D
+
+1578641851 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/julius_helper.cpp
 	<stdio.h>
 	<iostream>
 	<fstream>
+	<boost/regex.hpp>
+	<boost/asio.hpp>
+	"julius_struct.h"
+
+1575283668 413432b1648f089f7d85c939a35036ba7abd4
+	<stdio.h>
+	<iostream>
+	<fstream>
+	<boost/regex.hpp>
+	<boost/asio.hpp>
+	"julius_struct.h"
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<unistd.h>
+	<time.h>
+	<linux/i2c-dev.h>
+	<sys/ioctl.h>
+	<pthread.h>
+	<iostream>
+	<string>
+	<unistd.h>
+	<opencv2/opencv.hpp>
+	<urg_c/urg_sensor.h>
+	<urg_c/urg_utils.h>
+	"SimpleGPIO.h"
+	"jetsas.h"
+	"open_urg_sensor.h"
 	<boost/regex.hpp>
 	<boost/asio.hpp>
 	"julius_struct.h"
@@ -121,11 +147,7 @@
 	<sys/ioctl.h>
 	<stdarg.h>
 
-<<<<<<< HEAD
-1578562497 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
-=======
-1575283668 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
->>>>>>> a35413432b1648f089f7d85c939a35036ba7abd4
+1578642345 source:/home/nvidia/projects/kei_JetsonXavier/JetSAS/main.cpp
 	<stdio.h>
 	<fcntl.h>
 	<stdlib.h>
