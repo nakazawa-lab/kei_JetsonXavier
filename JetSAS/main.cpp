@@ -118,12 +118,24 @@ int main(int argc, char *argv[])
     ip::tcp::endpoint ep(ADDR, port);
     ip::tcp::iostream s(ep);
 
+
+    /// 推定結果と信頼度の正規表現
+    boost::regex p_regex("CM=\"([^\"]+)\"");
+    boost::smatch m_match;
+    boost::regex q_regex("WORD=\"([^\"]+)\"");
+    boost::smatch n_match;
+    boost::regex r_regex("MSEC=\"([^\"]+)\"");
+    boost::smatch o_match;
+
+    string line, cm, word, msec;
+    float cmscore, cmtime;
+
     JuliusResults jrs;
-    string line;
+//    string line;
     getline(s, line);   /// サーバーのチェック
     if (line.find("<STARTPROC/>") != string::npos)
     {
-        printf("============= Started speech recognition! =============\n");
+        cout << "word|cmscore|duration" << endl;
 //        s << "PAUSE\n" << std::flush;
 //        alutSleep(0.7);
 //        say_ready();   /// "hello, master. i'm ready."
@@ -158,64 +170,36 @@ int main(int argc, char *argv[])
     {
         while (getline(s, line))
         {
-            /// ここをコメントアウトすると入力文字列lineの中身を見れる
 //            cout << line << endl;
-            cmd_id = jrs.jmerge_data(line);
-            if (cmd_id >= 0)
+            if (line.find("INPUT STATUS=\"LISTEN\"") != string::npos)
             {
-                jrs.emit_log(cmd_id, "excel");
+                cm = "";
+                word = "";
+                msec = "";
+            }
+            else if (line.find("</RECOGOUT>") != string::npos)
+            {
+                cmscore = atof(cm.c_str());     /// string -> float
+                cmtime = atof(msec.c_str());    /// string -> float
+//                cout << "WORD=" << word << ", " << "SCORE=" << cmscore << ", "<< "TIME=" << cmtime << endl;
+                if (word=="") word="NoResult";
+                cout <<  word << "|" << cmscore << "|" << cmtime << endl;
                 break;
-                delete jrs.select(cmd_id);
             }
-        }
-
-        ///　しきい値処理
-//        if (is_nakbot_voice(jrs.select(cmd_id), jrs.select(jrs.init_id), said_stamp)==true) valid_flag = false;
-//        else valid_flag = threshold_turning(jrs.select(cmd_id));
-        valid_flag = true;
-//        valid_flag = threshold_turning(jrs.select(cmd_id));
-//
-        /// 命令の実行
-        if (mode=="sleep")
-        {
-                if(jrs.select(cmd_id)->word == "yes")
-                {
-                    mode = "normal";
-//                    say_sleep();
-//                    alutSleep(0.7);
-//                    s << "DIE\n" << std::flush;
-//                    return 0;
-                }
-//                else
-//                {
-//                    mode = "normal";
-////                    say_sleep();
-////                    alutSleep(0.7);
-////                    s << "DIE\n" << std::flush;
-////                    return 0;
-//                }
-        }
-        else if (mode == "stay")
-        {
-            if(jrs.select(cmd_id)->word == "ok")
+            else if (line.find("CLASSID=\"2\" ")!= string::npos)
             {
-                mode = "normal";
-//                s << "PAUSE\n" << std::flush;
-//                say_ready();   /// "hello, master. i'm ready."
-//                s << "RESUME\n" << std::flush;
-//                state=0;
+                if (boost::regex_search(line, m_match, p_regex)) cm += m_match.str(1);     /// 一致度を取得
+                if (boost::regex_search(line, n_match, q_regex)) word += n_match.str(1);   /// 命令を取得
             }
-        }
-        else if (mode == "normal")
-        {
-            if (valid_flag==true)
+            else if (line.find("<RECOGFAIL/>")!= string::npos)
             {
-                resp = exec_cmd(jrs.select(cmd_id)->word, tid2, &mode);
-//                AQUES_Talk(resp);
-//                said_stamp = talk(resp);
+                cout << "TooShortAudio|0|" << cmtime << endl;
+            }
+            else
+            {
+                if (boost::regex_search(line, o_match, r_regex)) msec += o_match.str(1);   /// 時間を取得
             }
         }
-
     }
     return 0;
 }/****************************************************************** END ***/
